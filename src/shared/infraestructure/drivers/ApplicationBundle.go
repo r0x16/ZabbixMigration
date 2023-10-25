@@ -2,7 +2,7 @@ package drivers
 
 import (
 	"github.com/labstack/echo/v4"
-	"git.tnschile.com/sistemas/tnsgo/raidark/src/shared/infraestructure/drivers/db"
+	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/infraestructure/drivers/db"
 )
 
 type ApplicationBundle struct {

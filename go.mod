@@ -1,4 +1,4 @@
-module git.tnschile.com/sistemas/tnsgo/raidark
+module git.tnschile.com/sistemas/zabbix/zabbix-migration
 
 go 1.19
 

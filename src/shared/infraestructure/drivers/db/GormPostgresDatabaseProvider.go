@@ -3,8 +3,8 @@ package db
 import (
 	"os"
 
-	"git.tnschile.com/sistemas/tnsgo/raidark/src/shared/domain"
-	"git.tnschile.com/sistemas/tnsgo/raidark/src/shared/infraestructure/drivers/db/connection"
+	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/domain"
+	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/infraestructure/drivers/db/connection"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

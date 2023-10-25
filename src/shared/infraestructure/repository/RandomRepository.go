@@ -3,8 +3,8 @@ package repository
 import (
 	"math/rand"
 
-	"git.tnschile.com/sistemas/tnsgo/raidark/src/domain/model"
-	i "git.tnschile.com/sistemas/tnsgo/raidark/src/domain/repository"
+	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/domain/model"
+	i "git.tnschile.com/sistemas/zabbix/zabbix-migration/src/domain/repository"
 	"gorm.io/gorm"
 )
 

@@ -1,10 +1,10 @@
 package infraestructure
 
 import (
-	"git.tnschile.com/sistemas/tnsgo/raidark/src/shared/app"
-	"git.tnschile.com/sistemas/tnsgo/raidark/src/shared/infraestructure/drivers"
-	"git.tnschile.com/sistemas/tnsgo/raidark/src/shared/infraestructure/drivers/db"
-	"git.tnschile.com/sistemas/tnsgo/raidark/src/shared/infraestructure/drivers/framework"
+	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/app"
+	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/infraestructure/drivers"
+	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/infraestructure/drivers/db"
+	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/infraestructure/drivers/framework"
 )
 
 type Main struct {

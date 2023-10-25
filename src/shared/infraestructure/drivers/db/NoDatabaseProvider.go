@@ -1,6 +1,6 @@
 package db
 
-import "git.tnschile.com/sistemas/tnsgo/raidark/src/shared/domain"
+import "git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/domain"
 
 /*
  * Represents a fake Database connection

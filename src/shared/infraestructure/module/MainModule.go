@@ -3,9 +3,9 @@ package module
 import (
 	"net/http"
 
-	"git.tnschile.com/sistemas/tnsgo/raidark/src/shared/domain"
-	"git.tnschile.com/sistemas/tnsgo/raidark/src/shared/infraestructure/drivers"
-	"git.tnschile.com/sistemas/tnsgo/raidark/src/shared/infraestructure/repository"
+	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/domain"
+	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/infraestructure/drivers"
+	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/infraestructure/repository"
 	"github.com/labstack/echo/v4"
 )
 
