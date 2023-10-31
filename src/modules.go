@@ -3,11 +3,13 @@ package src
 import (
 	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/domain"
 	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/infraestructure/drivers"
-	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/infraestructure/module"
+	main "git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/infraestructure/module"
+	zserver "git.tnschile.com/sistemas/zabbix/zabbix-migration/src/zabbix-server/infraestructure/module"
 )
 
 func ProvideModules(bundle *drivers.ApplicationBundle) []domain.ApplicationModule {
 	return []domain.ApplicationModule{
-		&module.MainModule{Bundle: bundle},
+		&main.MainModule{Bundle: bundle},
+		&zserver.ZabbixServerModule{Bundle: bundle},
 	}
 }
