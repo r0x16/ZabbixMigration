@@ -40,11 +40,8 @@ func API(url string) *ZabbixConnector {
  * Connect is a function that connects to the Zabbix API
  * Sets the token in the ZabbixConnector for future requests
  */
-func (z *ZabbixConnector) Connect(user string, password string) *model.Error {
-	body := z.UnauthorizedBody("user.login", model.ZabbixParams{
-		"username": user,
-		"password": password,
-	})
+func (z *ZabbixConnector) baseConnect(params model.ZabbixParams) *model.Error {
+	body := z.UnauthorizedBody("user.login", params)
 
 	response, err := z.Request(body)
 
