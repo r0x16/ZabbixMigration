@@ -5,7 +5,6 @@ import (
 
 	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/domain"
 	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/infraestructure/drivers"
-	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/infraestructure/drivers/zabbix"
 	"github.com/labstack/echo/v4"
 )
 
@@ -19,14 +18,9 @@ var _ domain.ApplicationModule = &MainModule{}
 func (m *MainModule) Setup() {
 	// This is a simple GET route that in Develpoment is used to test things
 	m.Bundle.Server.GET("/", func(c echo.Context) error {
-		zabbix := zabbix.API64("http://zabbix.domain/api_jsonrpc.php")
-		err := zabbix.Connect("user", "password")
-
-		if err != nil {
-			return c.JSONPretty(err.Code, err, "  ")
-		}
-
-		return c.JSONPretty(http.StatusOK, zabbix.Token, "  ")
+		return c.Render(http.StatusOK, "index", echo.Map{
+			"title": "Index title!",
+		})
 	})
 
 	// This route checks health of the application
