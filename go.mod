@@ -3,6 +3,7 @@ module git.tnschile.com/sistemas/zabbix/zabbix-migration
 go 1.21
 
 require (
+	github.com/foolin/goview v0.3.0
 	github.com/google/uuid v1.3.1
 	github.com/imroc/req/v3 v3.42.1
 	github.com/labstack/echo/v4 v4.11.2
