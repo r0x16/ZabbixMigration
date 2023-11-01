@@ -22,6 +22,8 @@ func (app *EchoApplicationProvider) Boot() {
 	server := echo.New()
 	server.Use(middleware.Logger())
 	server.Use(middleware.Recover())
+	SetupRenderer(server)
+	SetupStatic(server)
 
 	app.Bundle.Server = server
 }
