@@ -11,6 +11,11 @@ type ZabbixConnector64 struct {
 
 var _ domain.ZabbixConnectorProvider = &ZabbixConnector64{}
 
+const (
+	VERSION_64 model.ZabbixVersion = 6
+	VERSION_60 model.ZabbixVersion = VERSION_64
+)
+
 /**
  * API is a function that returns a ZabbixConnector
  * It receives a string with the URL of the Zabbix API

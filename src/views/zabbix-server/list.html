@@ -1,0 +1,28 @@
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Connection Name</th>
+            <th>URL</th>
+            <th>Version</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        {{ range .zabbixServerList }}
+        <tr>
+            <td>{{.Name}}</td>
+            <td>{{.URL}}</td>
+            <td>{{.Version}}</td>
+            <td>
+                <a href="{{ reverse "ZabbixServerEdit" "id" .ID }}" class="btn btn-primary btn-sm">
+                    <i class="bi bi-pencil-square"></i>
+                </a>
+                <a href="{{ reverse "ZabbixServerDelete" "id" .ID }}" class="btn btn-danger btn-sm">
+                    <i class="bi bi-trash"></i>
+                </a>
+            </td>
+        </tr>
+        {{ end }}
+    </tbody>
+</table>
+

@@ -66,7 +66,7 @@ func (z *ZabbixConnector) Request(body *model.ZabbixRequest) (*model.ZabbixRespo
 	if !resp.IsSuccessState() {
 		return nil, &model.Error{
 			Code:    resp.StatusCode,
-			Message: fmt.Sprintf("Error %s", resp.Status),
+			Message: fmt.Sprintf("Connection Error %s", resp.Status),
 			Data:    resp,
 		}
 	}
@@ -132,4 +132,37 @@ func (c *ZabbixConnector) initializeClient() {
 	c.client.SetCommonHeader("Content-Type", "application/json")
 	c.client.SetBaseURL(c.Url)
 	c.client.SetTimeout(5 * time.Second)
+}
+
+func (z *ZabbixConnector) GetVersion() (model.ZabbixVersion, *model.Error) {
+	var version model.ZabbixVersion
+
+	body := z.UnauthorizedBody("apiinfo.version", model.ZabbixParams{})
+
+	response, err := z.Request(body)
+
+	if err != nil {
+		return version, err
+	}
+
+	versionString := response.Result.(string)[0:1]
+
+	switch versionString {
+	case "4":
+		version = VERSION_40
+	case "6":
+		version = VERSION_60
+	default:
+		version = model.VERSION_UNKNOWN
+	}
+
+	if version == model.VERSION_UNKNOWN {
+		return version, &model.Error{
+			Code:    http.StatusInternalServerError,
+			Message: "Zabbix version not supported",
+			Data:    versionString,
+		}
+	}
+
+	return version, nil
 }

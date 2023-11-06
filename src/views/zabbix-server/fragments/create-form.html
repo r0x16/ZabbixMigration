@@ -1,0 +1,57 @@
+{{ if .error }}
+<div class="alert alert-danger" role="alert">
+    {{ .error }}
+</div>
+{{ end }}
+
+<div class="card border-info mb-3">
+    <div class="card-header">
+        <i class="bi bi-plugin"></i>
+        Connect a new Zabbix Server
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">Server connection parameters</h5>
+        <p class="card-text">Provide the connection details to connect to a new Zabbix server.</p>
+        <form method="post" action="{{ reverse " ZabbixServerStore" }}">
+
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="name" name="connectionName" placeholder="Connection Name">
+                <label for="connectionName" class="form-label">Connection Name</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="url" class="form-control" id="apiUrl" name="apiUrl" placeholder="Server API URL">
+                <label for="apiUrl" class="form-label">Server API URL</label>
+                <div id="apiUrlHelp" class="form-text">
+                    In format: http[s]://zabbix-hostname/[zabbix]/api_jsonrpc.php
+                </div>
+            </div>
+
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="serverVersion">
+                    <i class="bi bi-person-fill"></i>
+                </label>
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Username">
+                    <label for="username" class="form-label">API Username</label>
+                </div>
+            </div>
+
+
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="serverVersion">
+                    <i class="bi bi-key-fill"></i>
+                </label>
+                <div class="form-floating">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                    <label for="password" class="form-label">Password</label>
+                </div>
+            </div>
+            <!-- <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                <label class="form-check-label" for="exampleCheck1">Check me out</label>
+            </div> -->
+            <button type="submit" class="btn btn-primary">Create</button>
+        </form>
+    </div>
+</div>

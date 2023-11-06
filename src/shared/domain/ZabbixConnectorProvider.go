@@ -7,4 +7,5 @@ type ZabbixConnectorProvider interface {
 	Request(body *model.ZabbixRequest) (*model.ZabbixResponse, *model.Error)
 	UnauthorizedBody(method string, params model.ZabbixParams) *model.ZabbixRequest
 	Body(method string, params model.ZabbixParams) *model.ZabbixRequest
+	GetVersion() (model.ZabbixVersion, *model.Error)
 }
