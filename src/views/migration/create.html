@@ -1,0 +1,21 @@
+{{define "content"}}
+
+{{ include "migration/fragments/header" }}
+
+<div class="mb-5">
+    <div>
+        {{ if .migrationList }}
+            {{ include "migration/list" }}
+        {{ else }}
+        <div class="alert alert-info" role="alert">
+            No migrations created yet.
+        </div>
+        {{ end }}
+    </div>
+</div>
+
+<div>
+    {{ include "migration/fragments/create-form" }}
+</div>
+
+{{end}}

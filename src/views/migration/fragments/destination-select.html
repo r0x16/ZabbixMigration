@@ -1,0 +1,12 @@
+<label for="destinationServer" class="form-label">Destination Server</label>
+
+<select name="destinationServer" id="destinationServer" class="form-select form-select-lg" aria-label="Destination Server">
+    <option value="0">Select destination server</option>
+    {{ range .servers }}
+    <option value="{{ .ID }}">{{ .Name }}</option>
+    {{ end }}
+</select>
+
+<div id="destinationServerHelp" class="form-text">
+    Cannot be the same as the source server
+</div>

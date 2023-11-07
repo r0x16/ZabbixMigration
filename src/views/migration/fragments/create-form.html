@@ -1,0 +1,42 @@
+{{ if .error }}
+<div class="alert alert-danger" role="alert">
+    {{ .error }}
+</div>
+{{ end }}
+
+<div class="card border-info mb-3">
+    <div class="card-header">
+        <i class="bi bi-database"></i>
+        <i class="bi bi-arrow-right-short"></i>
+        Link two Zabbix Servers to migrate data
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">Zabbix pairing parameters</h5>
+        <p class="card-text">
+            Provide the connection details to connect to two Zabbix servers.
+            <br>
+            The first server will be the source of the data to migrate.
+            <br>
+            The second server will be the destination of the data to migrate.
+        </p>
+        <form method="post" action="{{ reverse " MigrationStore" }}">
+
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="name" name="migrationName" placeholder="Migration Name">
+                <label for="migrationName" class="form-label">Migration Name</label>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col">
+                    {{ include "migration/fragments/source-select" }}
+                </div>
+
+                <div class="col">
+                    {{ include "migration/fragments/destination-select" }}
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Create</button>
+        </form>
+    </div>
+</div>
