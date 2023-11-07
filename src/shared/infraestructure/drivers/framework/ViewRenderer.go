@@ -2,13 +2,21 @@ package framework
 
 import (
 	"html/template"
+	"time"
 
+	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/infraestructure/drivers/ui"
 	"github.com/foolin/goview"
 	"github.com/foolin/goview/supports/echoview-v4"
 	"github.com/labstack/echo/v4"
 )
 
 func SetupRenderer(e *echo.Echo) {
+	loc, err := time.LoadLocation("America/Santiago")
+	if err != nil {
+		panic(err)
+	}
+	time.Local = loc
+
 	e.Renderer = echoview.New(goview.Config{
 		Root:         "src/views",
 		Extension:    ".html",
@@ -22,7 +30,8 @@ func SetupRenderer(e *echo.Echo) {
 
 func viewFuncs(e *echo.Echo) template.FuncMap {
 	return template.FuncMap{
-		"reverse": e.Reverse,
+		"reverse":     e.Reverse,
+		"date_format": ui.DateFormat,
 	}
 }
 

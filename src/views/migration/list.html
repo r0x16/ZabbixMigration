@@ -15,7 +15,7 @@
             <td>{{.Name}}</td>
             <td>{{.Source.Name}}</td>
             <td>{{.Destination.Name}}</td>
-            <td>{{.CreatedAt}}</td>
+            <td>{{date_format .CreatedAt "human"}}</td>
             <td>
                 <a href="{{ reverse "MigrationFlow" .ID }}" class="btn btn-primary btn-sm">
                     <i class="bi bi-gear"></i>
