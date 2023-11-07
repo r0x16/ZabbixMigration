@@ -30,3 +30,10 @@ func (r *ZabbixServerRepository) GetAll() ([]*model.ZabbixServer, error) {
 	result := r.db.Find(&zabbixServers)
 	return zabbixServers, result.Error
 }
+
+// GetByID implements repository.ZabbixServerRepository.
+func (r *ZabbixServerRepository) GetByID(id uint) (*model.ZabbixServer, error) {
+	var zabbixServer model.ZabbixServer
+	result := r.db.First(&zabbixServer, id)
+	return &zabbixServer, result.Error
+}
