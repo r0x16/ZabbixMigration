@@ -2,6 +2,7 @@ package infraestructure
 
 import (
 	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/app"
+	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/domain"
 	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/infraestructure/drivers"
 	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/infraestructure/drivers/db"
 	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/infraestructure/drivers/framework"
@@ -18,7 +19,8 @@ func (m *Main) RunServices() {
 	dbProvider := &db.GormPostgresDatabaseProvider{}
 	app := &framework.EchoApplicationProvider{
 		Bundle: &drivers.ApplicationBundle{
-			Database: dbProvider,
+			Database:     dbProvider,
+			ServerEvents: make(map[string]domain.ServerEventProvider),
 		},
 	}
 
