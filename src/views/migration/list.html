@@ -6,6 +6,8 @@
             <th>Source</th>
             <th>Destination</th>
             <th>Creation Date</th>
+            <th>Proxy mapped</th>
+            <th>Run status</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -17,12 +19,43 @@
             <td>{{.Destination.Name}}</td>
             <td>{{date_format .CreatedAt "human"}}</td>
             <td>
-                <a href="{{ reverse "MigrationFlow" .ID }}" class="btn btn-primary btn-sm">
-                    <i class="bi bi-gear"></i>
+                {{if .IsProxyMapped}}
+                <i class="bi bi-check-circle-fill text-success"></i>
+                {{else}}
+                <i class="bi bi-x-circle-fill text-danger"></i>
+                {{end}}
+            </td>
+            <td>
+                {{if .IsSuccess}}
+                <i class="bi bi-check-circle-fill text-success"></i>
+                {{else}}
+                <i class="bi bi-slash-circle text-secondary"></i>
+                {{end}}
+            </td>
+            <td>
+                <a href="{{ reverse " ProxyMapFlow" .ID }}" class="btn btn-primary btn-sm" data-bs-toggle="tooltip"
+                    data-bs-title="Map proxy servers">
+                    <i class="bi bi-diagram-2-fill"></i>
+                </a>
+                <a href="{{ reverse " TemplateMapFlow" .ID }}" class="btn btn-info btn-sm" data-bs-toggle="tooltip"
+                    data-bs-title="Map templates">
+                    <i class="bi bi-journal-text"></i>
+                </a>
+
+                {{if .IsProxyMapped}}
+                <a data-bs-toggle="tooltip" data-bs-title="Start Migration" href="{{ reverse " StartMigrationFlow"
+                    .ID}}" class="btn btn-success btn-sm">
+                    <i class="bi bi-play-fill"></i>
+                </a>
+                {{else}}
+                <a href="#" class="btn btn-secondary btn-sm disabled">
+                    <i class="bi bi-play-fill"></i>
+                </a>
+                {{end}}
+
                 </a>
             </td>
         </tr>
         {{ end }}
     </tbody>
 </table>
-
