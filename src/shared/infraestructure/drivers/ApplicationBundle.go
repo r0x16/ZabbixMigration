@@ -1,13 +1,15 @@
 package drivers
 
 import (
-	"github.com/labstack/echo/v4"
+	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/domain"
 	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/infraestructure/drivers/db"
+	"github.com/labstack/echo/v4"
 )
 
 type ApplicationBundle struct {
-	Server   *echo.Echo
-	Database *db.GormPostgresDatabaseProvider
+	Server       *echo.Echo
+	Database     *db.GormPostgresDatabaseProvider
+	ServerEvents map[string]domain.ServerEventProvider
 }
 
 type ActionCallback func(echo.Context, *ApplicationBundle) error
