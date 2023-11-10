@@ -7,4 +7,5 @@ import (
 type MigrationRepository interface {
 	Store(migration *model.Migration) error
 	GetAll() ([]*model.Migration, error)
+	GetById(id uint) (*model.Migration, error)
 }

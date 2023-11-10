@@ -30,3 +30,10 @@ func (r *MigrationRepository) Store(migration *model.Migration) error {
 	result := r.db.Create(&migration)
 	return result.Error
 }
+
+// GetById implements repository.MigrationRepository.
+func (r *MigrationRepository) GetById(id uint) (*model.Migration, error) {
+	var migration model.Migration
+	result := r.db.Joins("Source").Joins("Destination").First(&migration, id)
+	return &migration, result.Error
+}
