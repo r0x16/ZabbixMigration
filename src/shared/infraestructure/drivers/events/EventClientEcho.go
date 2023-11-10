@@ -27,6 +27,15 @@ func NewEventClientEcho(id string, c echo.Context) *EventClientEcho {
 	}
 }
 
+func (c EventClientEcho) Setup() *model.Error {
+	c.context.Response().Header().Set("Access-Control-Allow-Origin", "*")
+	c.context.Response().Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	c.context.Response().Header().Set("Content-Type", "text/event-stream")
+	c.context.Response().Header().Set("Cache-Control", "no-cache")
+	c.context.Response().Header().Set("Connection", "keep-alive")
+	return nil
+}
+
 // GetId implements domain.EventClient.
 func (c EventClientEcho) GetId() string {
 	return c.Id
