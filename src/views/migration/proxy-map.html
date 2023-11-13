@@ -1,6 +1,20 @@
 {{define "content"}}
-Test
+
+{{if not .migration.IsProxyImported}}
+    <div class="d-flex align-items-center alert alert-light">
+        <strong role="status">Loading proxy information from Zabbix servers, please wait a moment...</strong>
+        <div class="spinner-border ms-auto" aria-hidden="true"></div>
+    </div>
+{{else}}
+    {{include "migration/fragments/proxy-binding-form" }}
+{{end}}
+
 {{end}}
 {{define "scripts"}}
-
+{{if not .migration.IsProxyImported}}
+    <script>
+        var importEventsUrl = "{{ .importEventsUrl }}";
+    </script>
+    <script src="/js/migration/proxy-import.js"></script>
+{{end}}
 {{end}}

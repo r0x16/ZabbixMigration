@@ -19,10 +19,10 @@ type EventClientEcho struct {
 var _ domain.EventClient = &EventClientEcho{}
 
 // NewEventClientEcho creates a new EventClientEcho instance.
-func NewEventClientEcho(id string, c echo.Context) *EventClientEcho {
-	return &EventClientEcho{
+func NewEventClientEcho(id string, c echo.Context) EventClientEcho {
+	return EventClientEcho{
 		Id:           id,
-		eventChannel: make(chan *domain.EventMessage),
+		eventChannel: make(chan *domain.EventMessage, 1),
 		context:      c,
 	}
 }
@@ -49,6 +49,7 @@ func (c EventClientEcho) SendMessage(message *domain.EventMessage) *model.Error 
 
 // WaitForMessage implements domain.EventClient.
 func (c EventClientEcho) Online() *model.Error {
+	c.ping()
 	for {
 		select {
 		case message := <-c.eventChannel:
@@ -57,12 +58,17 @@ func (c EventClientEcho) Online() *model.Error {
 				return err
 			}
 		case <-c.context.Request().Context().Done():
+			c.Close()
 			return nil
 		}
 	}
 }
 
 func (c EventClientEcho) Close() {
+	c.handleEvent(&domain.EventMessage{
+		Event: "ready",
+		Data:  "close",
+	})
 	close(c.eventChannel)
 }
 
@@ -82,7 +88,7 @@ func (c EventClientEcho) handleEvent(message *domain.EventMessage) *model.Error 
 
 func (c EventClientEcho) transportEvent(event string, data string) *model.Error {
 	const format = "event:%s\ndata:%s\n\n"
-	_, err := c.context.Response().Write([]byte(fmt.Sprintf(format, event, data)))
+	_, err := c.context.Response().Writer.Write([]byte(fmt.Sprintf(format, event, data)))
 	if err != nil {
 		return &model.Error{
 			Code:    http.StatusInternalServerError,
@@ -93,4 +99,11 @@ func (c EventClientEcho) transportEvent(event string, data string) *model.Error 
 
 	c.context.Response().Flush()
 	return nil
+}
+
+func (c EventClientEcho) ping() *model.Error {
+	return c.handleEvent(&domain.EventMessage{
+		Event: "ping",
+		Data:  "pong",
+	})
 }
