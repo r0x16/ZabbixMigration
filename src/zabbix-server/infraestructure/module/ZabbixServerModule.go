@@ -18,4 +18,5 @@ func (m *ZabbixServerModule) Setup() {
 
 	zserver.GET("", m.Bundle.ActionInjection(action.CreateZabbixServer)).Name = "ZabbixServerCreate"
 	zserver.POST("", m.Bundle.ActionInjection(action.CreateZabbixServer)).Name = "ZabbixServerStore"
+	zserver.GET("/:zbxid", m.Bundle.ActionInjection(action.ShowZabbixServer)).Name = "ZabbixServerShow"
 }

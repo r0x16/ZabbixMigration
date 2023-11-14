@@ -10,7 +10,11 @@
     <tbody class="table-group-divider">
         {{ range .zabbixServerList }}
         <tr>
-            <td>{{.Name}}</td>
+            <td>
+                <a href="{{ reverse "ZabbixServerShow" .ID }}">
+                    {{.Name}}
+                </a>
+            </td>
             <td>{{.URL}}</td>
             <td>{{.Version}}</td>
             <td>
