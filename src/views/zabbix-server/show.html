@@ -1,0 +1,50 @@
+{{define "content"}}
+
+{{ include "zabbix-server/fragments/header" }}
+
+<div class="card">
+    <div class="card-header">
+        <i class="bi bi-plugin"></i>
+        Zabbix Server Information
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">{{.server.Name}}</h5>
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Parameter</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Connection Name</td>
+                    <td>{{.server.Name}}</td>
+                </tr>
+                <tr>
+                    <td>URL</td>
+                    <td>{{.server.URL}}</td>
+                </tr>
+                <tr>
+                    <td>Version</td>
+                    <td>{{.apiVersion}}</td>
+                </tr>
+                <tr>
+                    <td>Driver Used</td>
+                    <td>{{.server.Version}}</td>
+                </tr>
+                <tr>
+                    <td>Created At</td>
+                    <td>{{.server.CreatedAt}}</td>
+                </tr>
+                <tr>
+                    <td>Updated At</td>
+                    <td>{{.server.UpdatedAt}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <a href="{{ reverse "ZabbixServerCreate" }}" class="btn btn-primary">Return to Zabbix List</a>
+    </div>
+</div>
+
+{{end}}
