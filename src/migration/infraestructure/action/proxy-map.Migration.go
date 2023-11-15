@@ -1,19 +1,18 @@
 package action
 
 import (
+	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
-	"os"
-	"strconv"
+	"strings"
 	"sync"
-	"time"
 
 	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/domain/model"
 	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/migration/infraestructure/repository"
 	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/domain"
 	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/infraestructure/drivers"
 	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/infraestructure/drivers/events"
+	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/infraestructure/drivers/zabbix"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 )
@@ -92,18 +91,9 @@ func startProxyImport(bundle *drivers.ApplicationBundle, migration *model.Migrat
 func importProxies(bundle *drivers.ApplicationBundle, migration *model.Migration) {
 	event_id := fmt.Sprintf("proxy-import-%d", migration.ID)
 	eventHandler := bundle.ServerEvents[event_id]
-	// TO-DO: implement proxy import
-	f, err := os.Create("file.txt")
-	if err != nil {
-		log.Fatal(err)
-	}
-	// remember to close the file
-	defer f.Close()
 
-	for i := 0; i < 10; i++ {
-		time.Sleep(1 * time.Second)
-		f.WriteString(fmt.Sprintf("seconds elapsed: %s\n", strconv.Itoa(i)))
-	}
+	extractAndStoreProxies(bundle, migration, &migration.Source)
+	extractAndStoreProxies(bundle, migration, &migration.Destination)
 
 	closeError := closeImportProxy(bundle, migration, eventHandler)
 
@@ -136,4 +126,87 @@ func closeImportProxy(bundle *drivers.ApplicationBundle, migration *model.Migrat
 	})
 
 	return nil
+}
+
+func extractAndStoreProxies(
+	bundle *drivers.ApplicationBundle,
+	migration *model.Migration,
+	server *model.ZabbixServer,
+) *model.Error {
+	repo := repository.NewZabbixProxyRepository(bundle.Database.Connection)
+
+	proxies, err := getProxiesFromApi(server)
+
+	if err != nil {
+		return err
+	}
+
+	setProxiesMigration(proxies, migration)
+
+	if objJSON, erro := json.MarshalIndent(proxies, "", "    "); erro == nil {
+		fmt.Println(string(objJSON))
+	}
+
+	storeError := repo.MultipleStore(proxies)
+
+	if storeError != nil {
+		return &model.Error{
+			Code:    http.StatusInternalServerError,
+			Message: storeError.Error(),
+		}
+	}
+
+	return nil
+}
+
+func getProxiesFromApi(server *model.ZabbixServer) ([]*model.ZabbixProxy, *model.Error) {
+	api := zabbix.ServerConnector(server)
+	api.Connect(server.Username, server.Password)
+
+	proxies, err := api.Request(api.Body("proxy.get", model.ZabbixParams{
+		"output":          "extend",
+		"selectInterface": "extend",
+		"selectHosts":     []string{"hostid"},
+	}))
+
+	if err != nil {
+		return nil, err
+	}
+
+	proxyList, err := decodeProxies(proxies)
+
+	if err != nil {
+		return nil, err
+	}
+
+	setProxiesHostCount(proxyList)
+
+	return proxyList, nil
+}
+
+func decodeProxies(proxies *model.ZabbixResponse) ([]*model.ZabbixProxy, *model.Error) {
+	var proxyList []*model.ZabbixProxy
+	modifiedJSON := strings.ReplaceAll(string(proxies.RawResult), `"interface":[]`, `"interface":null`)
+	decodeError := json.Unmarshal([]byte(modifiedJSON), &proxyList)
+
+	if decodeError != nil {
+		return nil, &model.Error{
+			Code:    http.StatusInternalServerError,
+			Message: decodeError.Error(),
+		}
+	}
+
+	return proxyList, nil
+}
+
+func setProxiesHostCount(proxies []*model.ZabbixProxy) {
+	for _, proxy := range proxies {
+		proxy.HostCount = len(proxy.Hosts)
+	}
+}
+
+func setProxiesMigration(proxies []*model.ZabbixProxy, migration *model.Migration) {
+	for _, proxy := range proxies {
+		proxy.MigrationID = migration.ID
+	}
 }

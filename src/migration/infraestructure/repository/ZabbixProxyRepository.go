@@ -31,3 +31,12 @@ func (r *ZabbixProxyRepository) Store(zabbixProxy *model.ZabbixProxy) error {
 	result := r.db.Create(&zabbixProxy)
 	return result.Error
 }
+
+// MultipleStore implements repository.ZabbixProxyRepository.
+func (r *ZabbixProxyRepository) MultipleStore(zabbixProxies []*model.ZabbixProxy) error {
+	if len(zabbixProxies) > 0 {
+		return nil
+	}
+	result := r.db.Create(&zabbixProxies)
+	return result.Error
+}
