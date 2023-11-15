@@ -22,6 +22,10 @@ type ZabbixProxy struct {
 	// Migration in which this proxy is mapped
 	MigrationID uint       `json:"migrationId" gorm:"not null"`
 	Migration   *Migration `json:"migration" gorm:"foreignKey:MigrationID"`
+
+	// Zabbix Server in which this proxy is mapped
+	ZabbixServerID uint          `json:"zabbixServerId" gorm:"not null"`
+	ZabbixServer   *ZabbixServer `json:"zabbixServer" gorm:"foreignKey:ZabbixServerID"`
 }
 
 type ZabbixProxyInterface struct {
