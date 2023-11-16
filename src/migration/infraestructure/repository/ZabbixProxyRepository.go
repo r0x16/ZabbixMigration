@@ -16,6 +16,7 @@ func NewZabbixProxyRepository(db *gorm.DB) *ZabbixProxyRepository {
 	repo := &ZabbixProxyRepository{db: db}
 	repo.db.AutoMigrate(&model.ZabbixProxy{})
 	repo.db.AutoMigrate(&model.ZabbixProxyInterface{})
+	repo.db.AutoMigrate(&model.ZabbixProxyMapping{})
 	return repo
 }
 
@@ -45,5 +46,10 @@ func (r *ZabbixProxyRepository) MultipleStore(zabbixProxies []*model.ZabbixProxy
 		return nil
 	}
 	result := r.db.Create(&zabbixProxies)
+	return result.Error
+}
+
+func (r *ZabbixProxyRepository) StoreMapping(mapping *model.ZabbixProxyMapping) error {
+	result := r.db.Create(&mapping)
 	return result.Error
 }

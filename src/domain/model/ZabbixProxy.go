@@ -35,3 +35,11 @@ type ZabbixProxyInterface struct {
 	Port        int    `json:"port" gorm:"not null"`
 	Interfaceid string `json:"interfaceid" gorm:"type:varchar(255);not null"`
 }
+
+type ZabbixProxyMapping struct {
+	gorm.Model
+	SourceProxyID      uint `json:"sourceProxyId" gorm:"not null"`
+	SourceProxy        *ZabbixProxy
+	DestinationProxyID uint `json:"destinationProxyId" gorm:"not null"`
+	DestinationProxy   *ZabbixProxy
+}

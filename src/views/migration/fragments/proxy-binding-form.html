@@ -9,7 +9,15 @@
             <i class="bi bi-info-circle"></i>
             This form allows you to map the proxies from the source Zabbix server to the destination Zabbix server.
         </div>
-        <form action="">
+
+        {{if .error }}
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-circle"></i>
+                {{.error}}
+            </div>
+        {{end}}
+
+        <form action="{{reverse "ProxyMapFlow_store" .migration.ID}}" method="post">
             <div class="row mb-4">
                 <div class="col-sm-6">
                     <h5 class="p-2 text-center">
@@ -23,7 +31,7 @@
                 <div class="col-sm-1"></div>
                 <div class="col-sm-5">
                     <h5 class="p-2 text-center">
-                        
+
                         <span class="badge bg-primary">
                             <i class="bi bi-bullseye"></i>
                             {{.migration.Destination.Name}}
@@ -46,9 +54,9 @@
                 <div class="col-sm-1"><i class="bi bi-arrow-right"></i></div>
                 <div class="col-sm-5">
                     <select class="form-select" aria-label="Default-proxy" name="defaultProxy">
-                        <option selected>Select destination proxy</option>
+                        <option value="0" selected>Select destination proxy</option>
                         {{range .destinationProxies}}
-                        <option value="{{.ID}}">{{.Host}} ({{.ProxyAddress}})</option>
+                        <option value="{{.ID}}">{{.Host}}{{if .ProxyAddress}} ({{.ProxyAddress}}){{end}}</option>
                         {{end}}
                     </select>
                 </div>
@@ -76,12 +84,13 @@
                 </div>
                 <div class="col-sm-1"><i class="bi bi-arrow-right"></i></div>
                 <div class="col-sm-5">
-                    <select class="form-select" aria-label="Destination-server" name="destinationProxy[{{.ID}}]">
-                        <option selected>Select destination proxy</option>
+                    <select class="form-select" aria-label="Destination-server" name="destinationProxy">
+                        <option value="0" selected>Select destination proxy</option>
                         {{range $.destinationProxies}}
                         <option value="{{.ID}}">{{.Host}}{{if .ProxyAddress}} ({{.ProxyAddress}}){{end}}</option>
                         {{end}}
                     </select>
+                    <input type="hidden" name="sourceProxy" value="{{.ID}}">
                 </div>
             </div>
             {{end}}
