@@ -1,5 +1,7 @@
 {{define "content"}}
 
+{{ include "migration/fragments/header" }}
+
 {{if not .migration.IsProxyImported}}
     <div class="d-flex align-items-center alert alert-light">
         <strong role="status">Loading proxy information from Zabbix servers, please wait a moment...</strong>

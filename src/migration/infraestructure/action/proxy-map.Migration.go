@@ -26,12 +26,42 @@ func SetupProxyMapping(c echo.Context, bundle *drivers.ApplicationBundle) error 
 		return echo.NewHTTPError(err.Code, err.Message)
 	}
 
+	var sourceProxies []*model.ZabbixProxy
+	var destinationProxies []*model.ZabbixProxy
+	if migration.IsProxyImported {
+		sourceProxies, err = getImportedProxies(migration, &migration.Source, bundle)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+
+		destinationProxies, err = getImportedProxies(migration, &migration.Destination, bundle)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+	}
+
 	importEventsUrl := c.Echo().Reverse("ProxyMapFlow_importStatus", migration.ID)
 	return c.Render(http.StatusOK, "migration/proxy-map", echo.Map{
-		"title":           "Proxy mapping",
-		"migration":       migration,
-		"importEventsUrl": importEventsUrl,
+		"title":              "Proxy mapping",
+		"migration":          migration,
+		"importEventsUrl":    importEventsUrl,
+		"sourceProxies":      sourceProxies,
+		"destinationProxies": destinationProxies,
 	})
+}
+
+func getImportedProxies(migration *model.Migration, server *model.ZabbixServer, bundle *drivers.ApplicationBundle) ([]*model.ZabbixProxy, *model.Error) {
+	repo := repository.NewZabbixProxyRepository(bundle.Database.Connection)
+	proxies, err := repo.GetByMigrationAndServer(migration.ID, server.ID)
+
+	if err != nil {
+		return nil, &model.Error{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		}
+	}
+
+	return proxies, nil
 }
 
 func ImportProxyStatusEvents(c echo.Context, bundle *drivers.ApplicationBundle) error {
@@ -142,10 +172,7 @@ func extractAndStoreProxies(
 	}
 
 	setProxiesMigration(proxies, migration)
-
-	if objJSON, erro := json.MarshalIndent(proxies, "", "    "); erro == nil {
-		fmt.Println(string(objJSON))
-	}
+	setProxiesServer(proxies, server)
 
 	storeError := repo.MultipleStore(proxies)
 
@@ -208,5 +235,11 @@ func setProxiesHostCount(proxies []*model.ZabbixProxy) {
 func setProxiesMigration(proxies []*model.ZabbixProxy, migration *model.Migration) {
 	for _, proxy := range proxies {
 		proxy.MigrationID = migration.ID
+	}
+}
+
+func setProxiesServer(proxies []*model.ZabbixProxy, server *model.ZabbixServer) {
+	for _, proxy := range proxies {
+		proxy.ZabbixServerID = server.ID
 	}
 }

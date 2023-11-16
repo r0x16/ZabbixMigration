@@ -1,1 +1,94 @@
-<h2>Proxy list</h2>
+<div class="card m-2">
+    <div class="card-header">
+        <h2>
+            Mapping information for "{{.migration.Name}}"
+        </h2>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i>
+            This form allows you to map the proxies from the source Zabbix server to the destination Zabbix server.
+        </div>
+        <form action="">
+            <div class="row mb-4">
+                <div class="col-sm-6">
+                    <h5 class="p-2 text-center">
+                        <span class="badge bg-primary">
+                            <i class="bi bi-heart-arrow"></i>
+                            {{.migration.Source.Name}}
+                        </span>
+                        Source Proxies
+                    </h5>
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="col-sm-5">
+                    <h5 class="p-2 text-center">
+                        
+                        <span class="badge bg-primary">
+                            <i class="bi bi-bullseye"></i>
+                            {{.migration.Destination.Name}}
+                        </span>
+                        Destination Proxies
+                    </h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="row">
+                        <div class="col-sm-5 bg-secondary p-1 ps-3">
+                            <strong>Server monitoring</strong>
+                        </div>
+                        <div class="col-sm-7">
+                            <span class="badge bg-primary">Source server</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-1"><i class="bi bi-arrow-right"></i></div>
+                <div class="col-sm-5">
+                    <select class="form-select" aria-label="Default-proxy" name="defaultProxy">
+                        <option selected>Select destination proxy</option>
+                        {{range .destinationProxies}}
+                        <option value="{{.ID}}">{{.Host}} ({{.ProxyAddress}})</option>
+                        {{end}}
+                    </select>
+                </div>
+            </div>
+
+            {{range .sourceProxies}}
+            <div class="row mt-2">
+                <div class="col-sm-6">
+                    <div class="row">
+                        <div class="col-sm-5 bg-light-subtle p-1 ps-3">
+                            <strong>{{.Host}}</strong>
+                        </div>
+                        <div class="col-sm-3">
+                            <span class="badge bg-primary">{{.ProxyAddress}}</span>
+                        </div>
+                        <div class="col-sm-2">
+                            <span class="badge bg-success">{{.HostCount}} hosts</span>
+                        </div>
+                        <div class="col-sm-2">
+                            <span class="badge bg-secondary">
+                                {{if (eq .Status "5") }}Active proxy{{else}}Passive proxy{{end}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-1"><i class="bi bi-arrow-right"></i></div>
+                <div class="col-sm-5">
+                    <select class="form-select" aria-label="Destination-server" name="destinationProxy[{{.ID}}]">
+                        <option selected>Select destination proxy</option>
+                        {{range $.destinationProxies}}
+                        <option value="{{.ID}}">{{.Host}}{{if .ProxyAddress}} ({{.ProxyAddress}}){{end}}</option>
+                        {{end}}
+                    </select>
+                </div>
+            </div>
+            {{end}}
+
+            <div class="m-5 text-center">
+                <button type="submit" class="btn btn-primary">Submit proxy mapping</button>
+            </div>
+        </form>
+    </div>
+</div>
