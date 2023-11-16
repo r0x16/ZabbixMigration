@@ -14,4 +14,8 @@ func (m *MigrationModule) Setup() {
 
 	zserver.GET("", m.Bundle.ActionInjection(action.CreateMigration)).Name = "MigrationCreate"
 	zserver.POST("", m.Bundle.ActionInjection(action.CreateMigration)).Name = "MigrationStore"
+
+	zserver.GET("/:id/proxy-map", m.Bundle.ActionInjection(action.SetupProxyMapping)).Name = "ProxyMapFlow"
+	zserver.POST("/:id/proxy-map", m.Bundle.ActionInjection(action.SetupProxyMapping)).Name = "ProxyMapFlow_store"
+	zserver.GET("/:id/proxy-map/import-events", m.Bundle.ActionInjection(action.ImportProxyStatusEvents)).Name = "ProxyMapFlow_importStatus"
 }

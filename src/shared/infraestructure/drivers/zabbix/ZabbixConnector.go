@@ -1,6 +1,7 @@
 package zabbix
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
@@ -78,6 +79,15 @@ func (z *ZabbixConnector) Request(body *model.ZabbixRequest) (*model.ZabbixRespo
 			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
 			Data:    resp,
+		}
+	}
+
+	response.RawResult, err = json.Marshal(response.Result)
+
+	if err != nil {
+		return nil, &model.Error{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
 		}
 	}
 

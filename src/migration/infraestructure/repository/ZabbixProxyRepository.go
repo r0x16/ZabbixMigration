@@ -16,6 +16,7 @@ func NewZabbixProxyRepository(db *gorm.DB) *ZabbixProxyRepository {
 	repo := &ZabbixProxyRepository{db: db}
 	repo.db.AutoMigrate(&model.ZabbixProxy{})
 	repo.db.AutoMigrate(&model.ZabbixProxyInterface{})
+	repo.db.AutoMigrate(&model.ZabbixProxyMapping{})
 	return repo
 }
 
@@ -26,8 +27,29 @@ func (r *ZabbixProxyRepository) GetAll() ([]*model.ZabbixProxy, error) {
 	return zabbixProxies, result.Error
 }
 
+// GetByMigration implements repository.ZabbixProxyRepository.
+func (r *ZabbixProxyRepository) GetByMigrationAndServer(migrationId uint, serverId uint) ([]*model.ZabbixProxy, error) {
+	var zabbixProxies []*model.ZabbixProxy
+	result := r.db.Joins("Interface").Where("migration_id = ? AND zabbix_server_id = ?", migrationId, serverId).Find(&zabbixProxies)
+	return zabbixProxies, result.Error
+}
+
 // Store implements repository.ZabbixProxyRepository.
 func (r *ZabbixProxyRepository) Store(zabbixProxy *model.ZabbixProxy) error {
 	result := r.db.Create(&zabbixProxy)
+	return result.Error
+}
+
+// MultipleStore implements repository.ZabbixProxyRepository.
+func (r *ZabbixProxyRepository) MultipleStore(zabbixProxies []*model.ZabbixProxy) error {
+	if len(zabbixProxies) == 0 {
+		return nil
+	}
+	result := r.db.Create(&zabbixProxies)
+	return result.Error
+}
+
+func (r *ZabbixProxyRepository) StoreMapping(mapping *model.ZabbixProxyMapping) error {
+	result := r.db.Create(&mapping)
 	return result.Error
 }
