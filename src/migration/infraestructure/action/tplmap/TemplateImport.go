@@ -34,7 +34,7 @@ func CheckTemplateImport(c echo.Context, bundle *drivers.ApplicationBundle) (*mo
 		return nil, err
 	}
 
-	if !migration.IsProxyImported {
+	if !migration.IsTemplateImported {
 		startTemplateImport(c, bundle, migration)
 	}
 
@@ -62,8 +62,8 @@ func (ti *TemplateImport) start() {
 func (ti *TemplateImport) importTemplates() {
 	eventHandler := ti.bundle.ServerEvents[ti.event_id]
 
-	ti.extractAndStore(&ti.migration.Source)
-	ti.extractAndStore(&ti.migration.Destination)
+	ti.extractAndStore(&ti.migration.Source, true)
+	ti.extractAndStore(&ti.migration.Destination, false)
 
 	closeError := ti.closeImport(eventHandler)
 
@@ -78,12 +78,17 @@ func (ti *TemplateImport) importTemplates() {
 
 }
 
-func (ti *TemplateImport) extractAndStore(server *model.ZabbixServer) *model.Error {
+func (ti *TemplateImport) extractAndStore(server *model.ZabbixServer, clear bool) *model.Error {
+	fmt.Println("Extracting templates from server: ", server.Name)
 	repo := repository.NewZabbixTemplateRepository(ti.bundle.Database.Connection)
 
 	templates, err := ti.getTemplatesFromApi(server)
 	if err != nil {
 		return err
+	}
+
+	if clear {
+		templates = ti.clearUnusedTemplates(templates)
 	}
 
 	ti.setTemplatesMigration(templates)
@@ -143,6 +148,17 @@ func (ti *TemplateImport) decode(templates *model.ZabbixResponse) ([]*model.Zabb
 	}
 
 	return templateList, nil
+}
+
+func (ti *TemplateImport) clearUnusedTemplates(templates []*model.ZabbixTemplate) []*model.ZabbixTemplate {
+	cleanList := make([]*model.ZabbixTemplate, 0)
+	for _, template := range templates {
+		if template.HostCount > 0 {
+			cleanList = append(cleanList, template)
+		}
+	}
+
+	return cleanList
 }
 
 func (ti *TemplateImport) setTemplatesMigration(templates []*model.ZabbixTemplate) {

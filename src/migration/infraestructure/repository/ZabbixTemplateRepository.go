@@ -16,6 +16,7 @@ func NewZabbixTemplateRepository(db *gorm.DB) *ZabbixTemplateRepository {
 	repo := &ZabbixTemplateRepository{db: db}
 	repo.db.AutoMigrate(&model.ZabbixTemplate{})
 	repo.db.AutoMigrate(&model.ZabbixTemplateMapping{})
+	repo.db.AutoMigrate(&model.ZabbixParentTemplate{})
 	return repo
 }
 

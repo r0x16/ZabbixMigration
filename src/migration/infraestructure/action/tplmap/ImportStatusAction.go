@@ -17,7 +17,7 @@ type ImportStatusAction struct {
 	migration *model.Migration
 	eventId   string
 	clientId  string
-	client    *events.EventClientEcho
+	client    events.EventClientEcho
 }
 
 func ImportStatus(c echo.Context, bundle *drivers.ApplicationBundle) error {
@@ -63,7 +63,7 @@ func (s *ImportStatusAction) SetupClient() *model.Error {
 	if clientError != nil {
 		return clientError
 	}
-	s.client = &client
+	s.client = client
 	return nil
 }
 
