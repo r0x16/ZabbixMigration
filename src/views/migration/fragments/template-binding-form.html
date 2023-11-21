@@ -1,0 +1,101 @@
+<div class="card m-2">
+    <div class="card-header">
+        <h2>
+            Template mapping information for "{{.migration.Name}}"
+        </h2>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i>
+            This form allows you to map the templates from the source Zabbix server to the destination Zabbix server.
+            <br>
+            <strong>NOTE:</strong> templates with the same name were automatically mapped
+            <br>
+            Unmapped templates will be imported as new templates
+        </div>
+
+        {{if .error }}
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-circle"></i>
+                {{.error}}
+            </div>
+        {{end}}
+
+        <form action="{{reverse "TemplateMapFlow_store" .migration.ID}}" method="post">
+            <div class="row mb-4">
+                <div class="col-sm-7">
+                    <h5 class="p-2 text-center">
+                        <span class="badge bg-primary">
+                            <i class="bi bi-heart-arrow"></i>
+                            {{.migration.Source.Name}}
+                        </span>
+                        Source Templates
+                    </h5>
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="col-sm-4">
+                    <h5 class="p-2 text-center">
+
+                        <span class="badge bg-primary">
+                            <i class="bi bi-bullseye"></i>
+                            {{.migration.Destination.Name}}
+                        </span>
+                        Destination Templates
+                    </h5>
+                </div>
+            </div>
+
+            {{range .templateData.SourceTemplates}}
+            <div class="row mt-2">
+                <div class="col-sm-7">
+                    <div class="row">
+                        <div class="col-sm-5 bg-light-subtle p-1 ps-3">
+                            <strong>
+                                {{.Host}}
+                            </strong>
+                        </div>
+                        <div class="col-sm-2">
+                            <span class="badge bg-success">Hosts: {{.HostCount}}</span>
+                        </div>
+                        <div class="col-sm-2">
+                            <span class="badge bg-primary">Items: {{.Items}}</span>
+                        </div>
+                        <div class="col-sm-2">
+                            <span class="badge bg-danger">Triggers: {{.Triggers}}</span>
+                        </div>
+                        <div class="col-sm-1">
+                            <span class="badge bg-secondary mx-1" data-bs-toggle="tooltip"
+                            data-bs-title="Graphs: {{.Graphs}} | Screens: {{.Screens}} | Discoveries: {{.Discoveries}} | HttpTests: {{.HttpTests}} | Macros: {{.Macros}}">
+                                more...
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-1 text-center"><i class="bi bi-arrow-right"></i></div>
+                <div class="col-sm-4">
+                    {{with $sourceId := .ID}}
+                    <select class="destination-template-select" aria-label="Destination-template" name="destinationTemplate">
+                        <option value="">Create as template</option>
+                        {{range $.templateData.DestinationTemplates}}
+                            {{if
+                                and (index $.templateData.BaseTemplateMap $sourceId)
+                                (eq (index $.templateData.BaseTemplateMap $sourceId) .ID)
+                            }}
+                                <option value="{{.ID}}" selected>{{.Host}}</option>
+                            {{else}}
+                                <option value="{{.ID}}">{{.Host}}</option>
+                            {{end}}
+                        {{end}}
+                    </select>
+                    {{end}}
+                    <input type="hidden" name="sourceTemplate" value="{{.ID}}">
+                </div>
+            </div>
+            {{end}}
+
+            <div class="m-5 text-center">
+                <button type="submit" class="btn btn-primary">Submit proxy mapping</button>
+            </div>
+        </form>
+    </div>
+</div>

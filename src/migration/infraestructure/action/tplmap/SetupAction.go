@@ -22,14 +22,22 @@ func Setup(c echo.Context, bundle *drivers.ApplicationBundle) error {
 		return echo.NewHTTPError(migrationError.Code, migrationError.Message)
 	}
 
+	var templateData *MappingBase
+	var templateError *model.Error
+	if setup.migration.IsTemplateImported {
+		templateData, templateError = SetupBaseMapping(setup.bundle, setup.migration)
+		if templateError != nil {
+			return echo.NewHTTPError(templateError.Code, templateError.Message)
+		}
+	}
+
 	importEventsUrl := c.Echo().Reverse("TemplateMapFlow_importStatus", setup.migration.ID)
 	return c.Render(http.StatusOK, "migration/template-map", echo.Map{
-		"title":                "Template mapping",
-		"migration":            setup.migration,
-		"importEventsUrl":      importEventsUrl,
-		"sourceTemplates":      nil,
-		"destinationTemplates": nil,
-		"error":                nil,
+		"title":           "Template mapping",
+		"migration":       setup.migration,
+		"importEventsUrl": importEventsUrl,
+		"templateData":    templateData,
+		"error":           nil,
 	})
 }
 
