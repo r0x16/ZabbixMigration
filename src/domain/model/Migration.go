@@ -22,5 +22,6 @@ type Migration struct {
 	LastRunAt           time.Time `gorm:"not null"`
 	IsProxyImported     bool      `gorm:"not null;default:false"`
 	IsProxyMapped       bool      `gorm:"not null"`
+	IsTemplateImported  bool      `gorm:"not null;default:false"`
 	HasTemplateBindings bool      `gorm:"not null"`
 }
