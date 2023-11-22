@@ -22,6 +22,14 @@ func Setup(c echo.Context, bundle *drivers.ApplicationBundle) error {
 		return echo.NewHTTPError(migrationError.Code, migrationError.Message)
 	}
 
+	var storeError *model.Error
+	if c.Request().Method == http.MethodPost {
+		storeError = Store(setup.migration, c, bundle)
+		if storeError == nil {
+			return c.Redirect(http.StatusSeeOther, c.Echo().Reverse("MigrationCreate", setup.migration.ID))
+		}
+	}
+
 	var templateData *MappingBase
 	var templateError *model.Error
 	if setup.migration.IsTemplateImported {
@@ -37,7 +45,7 @@ func Setup(c echo.Context, bundle *drivers.ApplicationBundle) error {
 		"migration":       setup.migration,
 		"importEventsUrl": importEventsUrl,
 		"templateData":    templateData,
-		"error":           nil,
+		"error":           storeError,
 	})
 }
 

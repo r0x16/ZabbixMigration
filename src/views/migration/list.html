@@ -7,6 +7,7 @@
             <th>Destination</th>
             <th>Creation Date</th>
             <th>Proxy mapped</th>
+            <th>Template Mapped</th>
             <th>Run status</th>
             <th>Actions</th>
         </tr>
@@ -20,6 +21,13 @@
             <td>{{date_format .CreatedAt "human"}}</td>
             <td>
                 {{if .IsProxyMapped}}
+                <i class="bi bi-check-circle-fill text-success"></i>
+                {{else}}
+                <i class="bi bi-x-circle-fill text-danger"></i>
+                {{end}}
+            </td>
+            <td>
+                {{if .HasTemplateBindings}}
                 <i class="bi bi-check-circle-fill text-success"></i>
                 {{else}}
                 <i class="bi bi-x-circle-fill text-danger"></i>
@@ -44,12 +52,18 @@
                 </a>
                 {{end}}
 
+                {{if not .HasTemplateBindings}}
                 <a href="{{ reverse "TemplateMapFlow" .ID }}" class="btn btn-info btn-sm" data-bs-toggle="tooltip"
                     data-bs-title="Map templates">
                     <i class="bi bi-journal-text"></i>
                 </a>
+                {{else}}
+                <a href="#" class="btn btn-secondary btn-sm disabled">
+                    <i class="bi bi-journal-text"></i>
+                </a>
+                {{end}}
 
-                {{if .IsProxyMapped}}
+                {{if and .IsProxyMapped .HasTemplateBindings}}
                 <a data-bs-toggle="tooltip" data-bs-title="Start Migration" href="{{ reverse "StartMigrationFlow"
                     .ID}}" class="btn btn-success btn-sm">
                     <i class="bi bi-play-fill"></i>
