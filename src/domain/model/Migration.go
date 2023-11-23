@@ -18,10 +18,12 @@ type Migration struct {
 	DefaultProxyID sql.NullInt32 `json:"defaultProxyId" form:"defaultProxy"`
 	DefaultProxy   *ZabbixProxy  `json:"defaultProxy" gorm:"foreignKey:DefaultProxyID"`
 
-	IsSuccess           bool      `gorm:"not null"`
-	LastRunAt           time.Time `gorm:"not null"`
-	IsProxyImported     bool      `gorm:"not null;default:false"`
-	IsProxyMapped       bool      `gorm:"not null"`
-	IsTemplateImported  bool      `gorm:"not null;default:false"`
-	HasTemplateBindings bool      `gorm:"not null"`
+	IsRunning            bool      `gorm:"not null;default:false"`
+	IsTemplateSuccessful bool      `json:"isTemplateSuccessful" gorm:"not null;default:false"`
+	IsSuccess            bool      `gorm:"not null"`
+	LastRunAt            time.Time `gorm:"not null"`
+	IsProxyImported      bool      `gorm:"not null;default:false"`
+	IsProxyMapped        bool      `gorm:"not null"`
+	IsTemplateImported   bool      `gorm:"not null;default:false"`
+	HasTemplateBindings  bool      `gorm:"not null"`
 }

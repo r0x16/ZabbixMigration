@@ -2,6 +2,7 @@ package module
 
 import (
 	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/migration/infraestructure/action"
+	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/migration/infraestructure/action/runjob"
 	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/migration/infraestructure/action/tplmap"
 	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/shared/infraestructure/drivers"
 )
@@ -23,4 +24,6 @@ func (m *MigrationModule) Setup() {
 	zserver.GET("/:id/template-map", m.Bundle.ActionInjection(tplmap.Setup)).Name = "TemplateMapFlow"
 	zserver.POST("/:id/template-map", m.Bundle.ActionInjection(tplmap.Setup)).Name = "TemplateMapFlow_store"
 	zserver.GET("/:id/template-map/import-events", m.Bundle.ActionInjection(tplmap.ImportStatus)).Name = "TemplateMapFlow_importStatus"
+
+	zserver.GET("/:id/run", m.Bundle.ActionInjection(runjob.Run)).Name = "StartMigrationFlow"
 }

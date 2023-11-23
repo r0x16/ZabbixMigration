@@ -33,6 +33,9 @@ type ZabbixTemplateMapping struct {
 	SourceTemplate        *ZabbixTemplate `gorm:"foreignKey:SourceTemplateID"`
 	DestinationTemplateID uint            `json:"destinationTemplateId" gorm:"not null"`
 	DestinationTemplate   *ZabbixTemplate `gorm:"foreignKey:DestinationTemplateID"`
+
+	// Created by migration
+	IsNew bool `json:"is_new" gorm:"default:false"`
 }
 
 type ZabbixParentTemplate struct {
