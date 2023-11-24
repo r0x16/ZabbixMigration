@@ -65,7 +65,10 @@ func (r *ZabbixTemplateRepository) StoreMapping(mapping *model.ZabbixTemplateMap
 // GetByMigrationAndServerPreMapping implements repository.ZabbixTemplateRepository.
 func (r *ZabbixTemplateRepository) GetWithSourcePreMapping(migrationId uint, serverId uint) ([]*model.ZabbixTemplateMapping, error) {
 	var mappings []*model.ZabbixTemplateMapping
-	result := r.db.InnerJoins("SourceTemplate").Find(&mappings)
+	result := r.db.InnerJoins("SourceTemplate", r.db.Where(&model.ZabbixTemplate{
+		MigrationID:    migrationId,
+		ZabbixServerID: serverId,
+	})).Find(&mappings)
 	return mappings, result.Error
 }
 
