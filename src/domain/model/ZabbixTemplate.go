@@ -25,6 +25,10 @@ type ZabbixTemplate struct {
 	// Zabbix Server in which this proxy is mapped
 	ZabbixServerID uint          `json:"zabbixServerId" gorm:"not null"`
 	ZabbixServer   *ZabbixServer `json:"zabbixServer" gorm:"foreignKey:ZabbixServerID"`
+
+	// Mapping
+	SourceMapping      *ZabbixTemplateMapping `json:"sourceMapping" gorm:"foreignKey:SourceTemplateID"`
+	DestinationMapping *ZabbixTemplateMapping `json:"destinationMapping" gorm:"foreignKey:DestinationTemplateID"`
 }
 
 type ZabbixTemplateMapping struct {

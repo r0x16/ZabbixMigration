@@ -1,1 +1,27 @@
-Template migation infoirmation
+<div class="row">
+    <div class="col-md-4">Source used templates:</div>
+    <div class="col-md-8">
+        <strong>{{.templateInfo.TotalCount}}</strong>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">Creation queue:</div>
+    <div class="col-md-8">
+        <strong>{{.templateInfo.CreateCount}}</strong>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">Already Mapped queue:</div>
+    <div class="col-md-8">
+        <strong>{{.templateInfo.MapCount}}</strong>
+    </div>
+</div>
+
+<div class="mt-3 text-end">
+    <a href="{{reverse "StartMigrationFlow_TemplateRun"}}" class="btn btn-primary">
+        <i class="bi bi-play-fill"></i>
+        Start Template Migration
+    </a>
+</div>
