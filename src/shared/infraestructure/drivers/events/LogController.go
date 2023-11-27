@@ -2,9 +2,11 @@ package events
 
 import (
 	"bufio"
+	"io"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"sync"
 
 	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/domain/model"
@@ -84,23 +86,26 @@ func (controller *LogController) GetLogFromLine(from int) ([]string, *model.Erro
 	return text, nil
 }
 
-func (controller *LogController) WriteLog(text string) *model.Error {
+func (controller *LogController) WriteLog(text string) (string, *model.Error) {
 	eventLogMutex.Lock()
 	defer eventLogMutex.Unlock()
 
 	file, openError := os.OpenFile(controller.path, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
 	if openError != nil {
-		return &model.Error{
+		return "", &model.Error{
 			Code:    http.StatusInternalServerError,
 			Message: openError.Error(),
 		}
 	}
 	defer file.Close()
 
-	log.SetOutput(file)
+	strLog := &strings.Builder{}
+	multiLog := io.MultiWriter(file, strLog)
+
+	log.SetOutput(multiLog)
 	log.Println(text)
 
-	return nil
+	return strLog.String(), nil
 }
 
 func (controller *LogController) Path() string {
