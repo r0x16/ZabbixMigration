@@ -44,9 +44,15 @@ func Run(c echo.Context, bundle *drivers.ApplicationBundle) error {
 		return echo.NewHTTPError(templateMigrationInfoError.Code, templateMigrationInfoError.Message)
 	}
 
+	currentLogs, currentLogsError := run.Log.GetCurrentLog()
+	if currentLogsError != nil {
+		return echo.NewHTTPError(currentLogsError.Code, currentLogsError.Message)
+	}
+
 	return c.Render(http.StatusOK, "migration/run", echo.Map{
 		"migration":    run.Migration,
 		"templateInfo": templateMigrationInfo,
+		"currentLogs":  currentLogs,
 	})
 }
 

@@ -1,4 +1,4 @@
-<textarea class="form-control" id="runLogArea" rows="22" readonly></textarea>
+<textarea class="form-control" id="runLogArea" rows="22" readonly>{{range .currentLogs}}{{.}}{{end}}</textarea>
 <a href="{{reverse "StartMigrationFlow_DownloadLog"}}" class="btn btn-success my-3">
     <i class="bi bi-download"></i>
     Download Log File
