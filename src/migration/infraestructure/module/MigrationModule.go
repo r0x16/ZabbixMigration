@@ -1,6 +1,8 @@
 package module
 
 import (
+	"os"
+
 	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/migration/infraestructure/action"
 	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/migration/infraestructure/action/runjob"
 	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/migration/infraestructure/action/tplmap"
@@ -12,6 +14,7 @@ type MigrationModule struct {
 }
 
 func (m *MigrationModule) Setup() {
+	os.MkdirAll("logs/migration", 0755)
 	zserver := m.Bundle.Server.Group("/migration")
 
 	zserver.GET("", m.Bundle.ActionInjection(action.CreateMigration)).Name = "MigrationCreate"
