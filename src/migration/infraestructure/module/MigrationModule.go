@@ -30,4 +30,5 @@ func (m *MigrationModule) Setup() {
 
 	zserver.GET("/:id/run", m.Bundle.ActionInjection(runjob.Run)).Name = "StartMigrationFlow"
 	zserver.POST("/:id/run", m.Bundle.ActionInjection(runjob.Run)).Name = "StartMigrationFlow_Run"
+	zserver.GET("/:id/run/status/:logLines", m.Bundle.ActionInjection(runjob.RunStatus)).Name = "StartMigrationFlow_RunStatus"
 }

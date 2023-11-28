@@ -17,7 +17,7 @@ type TemplateMigration struct {
 func NewTemplateMigration(run *RunAction) *TemplateMigration {
 	return &TemplateMigration{
 		run:     run,
-		eventId: fmt.Sprintf("template-migration-%d", run.Migration.ID),
+		eventId: fmt.Sprintf("migration-run-%d", run.Migration.ID),
 	}
 }
 
@@ -31,7 +31,7 @@ func (s *TemplateMigration) Run() *model.Error {
 	if started {
 		return &model.Error{
 			Code:    http.StatusForbidden,
-			Message: "Template migration already running",
+			Message: "Migration  already running",
 		}
 	}
 

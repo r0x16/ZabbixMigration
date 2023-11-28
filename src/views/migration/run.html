@@ -28,4 +28,10 @@
 
 {{define "scripts"}}
 <script src="/js/tooltip.js"></script>
+{{if .migration.IsRunning}}
+<script>
+    var runEventsUrl = "{{ .runEventsUrl }}";
+</script>
+<script src="/js/migration/run-events.js"></script>
+{{end}}
 {{end}}

@@ -56,10 +56,12 @@ func Run(c echo.Context, bundle *drivers.ApplicationBundle) error {
 		return echo.NewHTTPError(currentLogsError.Code, currentLogsError.Message)
 	}
 
+	runEventsUrl := c.Echo().Reverse("StartMigrationFlow_RunStatus", run.Migration.ID, len(currentLogs))
 	return c.Render(http.StatusOK, "migration/run", echo.Map{
 		"migration":    run.Migration,
 		"templateInfo": templateMigrationInfo,
 		"currentLogs":  currentLogs,
+		"runEventsUrl": runEventsUrl,
 	})
 }
 
