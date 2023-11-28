@@ -19,6 +19,7 @@ type Migration struct {
 	DefaultProxy   *ZabbixProxy  `json:"defaultProxy" gorm:"foreignKey:DefaultProxyID"`
 
 	IsRunning            bool      `gorm:"not null;default:false"`
+	IsTemplateRunning    bool      `gorm:"not null;default:false"`
 	IsTemplateSuccessful bool      `json:"isTemplateSuccessful" gorm:"not null;default:false"`
 	IsSuccess            bool      `gorm:"not null"`
 	LastRunAt            time.Time `gorm:"not null"`

@@ -29,4 +29,5 @@ func (m *MigrationModule) Setup() {
 	zserver.GET("/:id/template-map/import-events", m.Bundle.ActionInjection(tplmap.ImportStatus)).Name = "TemplateMapFlow_importStatus"
 
 	zserver.GET("/:id/run", m.Bundle.ActionInjection(runjob.Run)).Name = "StartMigrationFlow"
+	zserver.POST("/:id/run", m.Bundle.ActionInjection(runjob.Run)).Name = "StartMigrationFlow_Run"
 }

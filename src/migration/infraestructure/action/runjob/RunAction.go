@@ -3,6 +3,7 @@ package runjob
 import (
 	"fmt"
 	"net/http"
+	"sync"
 
 	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/domain/model"
 	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/migration/infraestructure/action"
@@ -14,34 +15,40 @@ import (
 )
 
 type RunAction struct {
-	Context      echo.Context
-	Bundle       *drivers.ApplicationBundle
-	Migration    *model.Migration
-	Log          *events.LogController
-	TemplateRepo *repository.ZabbixTemplateRepository
+	Context           echo.Context
+	Bundle            *drivers.ApplicationBundle
+	Migration         *model.Migration
+	MigrationRepo     *repository.MigrationRepository
+	Log               *events.LogController
+	TemplateRepo      *repository.ZabbixTemplateRepository
+	TemplateMigration *TemplateMigration
 }
+
+var runMutex sync.Mutex
 
 func Run(c echo.Context, bundle *drivers.ApplicationBundle) error {
 	run := &RunAction{
-		Context:      c,
-		Bundle:       bundle,
-		TemplateRepo: repository.NewZabbixTemplateRepository(bundle.Database.Connection),
+		Context:       c,
+		Bundle:        bundle,
+		TemplateRepo:  repository.NewZabbixTemplateRepository(bundle.Database.Connection),
+		MigrationRepo: repository.NewMigrationRepository(bundle.Database.Connection),
 	}
 
-	migrationError := run.setupMigration()
-	if migrationError != nil {
-		return echo.NewHTTPError(migrationError.Code, migrationError.Message)
+	setupError := run.setup()
+	if setupError != nil {
+		return echo.NewHTTPError(setupError.Code, setupError.Message)
 	}
 
-	logError := run.setupLogs()
-	if logError != nil {
-		return echo.NewHTTPError(logError.Code, logError.Message)
-	}
-
-	templateMigration := NewTemplateMigration(run)
-	templateMigrationInfo, templateMigrationInfoError := templateMigration.GetMigrationInfo()
+	templateMigrationInfo, templateMigrationInfoError := run.TemplateMigration.GetMigrationInfo()
 	if templateMigrationInfoError != nil {
 		return echo.NewHTTPError(templateMigrationInfoError.Code, templateMigrationInfoError.Message)
+	}
+
+	if c.Request().Method == http.MethodPost {
+		runError := run.runPost()
+		if runError != nil {
+			return echo.NewHTTPError(runError.Code, runError.Message)
+		}
 	}
 
 	currentLogs, currentLogsError := run.Log.GetCurrentLog()
@@ -54,6 +61,42 @@ func Run(c echo.Context, bundle *drivers.ApplicationBundle) error {
 		"templateInfo": templateMigrationInfo,
 		"currentLogs":  currentLogs,
 	})
+}
+
+func (s *RunAction) runPost() *model.Error {
+	runMutex.Lock()
+	defer runMutex.Unlock()
+
+	runType := s.Context.FormValue("type")
+	switch runType {
+	case "template":
+		if !s.Migration.IsTemplateRunning && !s.Migration.IsTemplateSuccessful {
+			return s.TemplateMigration.Run()
+		}
+	default:
+		return &model.Error{
+			Code:    http.StatusBadRequest,
+			Message: "Invalid run type",
+		}
+	}
+
+	return nil
+}
+
+func (s *RunAction) setup() *model.Error {
+	migrationError := s.setupMigration()
+	if migrationError != nil {
+		return migrationError
+	}
+
+	logError := s.setupLogs()
+	if logError != nil {
+		return logError
+	}
+
+	s.TemplateMigration = NewTemplateMigration(s)
+
+	return nil
 }
 
 func (s *RunAction) setupMigration() *model.Error {

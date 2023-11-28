@@ -37,7 +37,11 @@
                 {{if .IsSuccess}}
                 <i class="bi bi-check-circle-fill text-success"></i>
                 {{else}}
-                <i class="bi bi-slash-circle text-secondary"></i>
+                    {{if .IsRunning}}
+                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                    {{else}}
+                    <i class="bi bi-slash-circle text-secondary"></i>
+                    {{end}}
                 {{end}}
             </td>
             <td>
