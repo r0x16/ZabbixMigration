@@ -57,7 +57,7 @@ func (s *RunStatusAction) RunClient() {
 
 	s.bundle.ServerEvents[s.eventId].Subscribe(s.client)
 	s.client.SendMessage(&domain.EventMessage{
-		Event: "log",
+		Event: "logs",
 		Data:  logDifference,
 	})
 	s.client.Online()
