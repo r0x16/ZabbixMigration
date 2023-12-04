@@ -49,6 +49,7 @@ func Run(c echo.Context, bundle *drivers.ApplicationBundle) error {
 		if runError != nil {
 			return echo.NewHTTPError(runError.Code, runError.Message)
 		}
+		return c.Redirect(http.StatusFound, c.Echo().Reverse("StartMigrationFlow", run.Migration.ID))
 	}
 
 	currentLogs, currentLogsError := run.Log.GetCurrentLog()
