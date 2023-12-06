@@ -18,6 +18,8 @@ type ZabbixTemplate struct {
 	HttpTests   int                     `json:"httpTests,string" gorm:"not null"`
 	Macros      int                     `json:"macros,string" gorm:"not null"`
 
+	RemoteFound string `json:"remoteFound"`
+
 	// Migration in which this proxy is mapped
 	MigrationID uint       `json:"migrationId" gorm:"not null"`
 	Migration   *Migration `json:"migration" gorm:"foreignKey:MigrationID"`
@@ -25,6 +27,10 @@ type ZabbixTemplate struct {
 	// Zabbix Server in which this proxy is mapped
 	ZabbixServerID uint          `json:"zabbixServerId" gorm:"not null"`
 	ZabbixServer   *ZabbixServer `json:"zabbixServer" gorm:"foreignKey:ZabbixServerID"`
+
+	// Mapping
+	SourceMapping      *ZabbixTemplateMapping `json:"sourceMapping" gorm:"foreignKey:SourceTemplateID"`
+	DestinationMapping *ZabbixTemplateMapping `json:"destinationMapping" gorm:"foreignKey:DestinationTemplateID"`
 }
 
 type ZabbixTemplateMapping struct {
@@ -33,6 +39,9 @@ type ZabbixTemplateMapping struct {
 	SourceTemplate        *ZabbixTemplate `gorm:"foreignKey:SourceTemplateID"`
 	DestinationTemplateID uint            `json:"destinationTemplateId" gorm:"not null"`
 	DestinationTemplate   *ZabbixTemplate `gorm:"foreignKey:DestinationTemplateID"`
+
+	// Created by migration
+	IsNew bool `json:"is_new" gorm:"default:false"`
 }
 
 type ZabbixParentTemplate struct {

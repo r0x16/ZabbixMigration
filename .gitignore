@@ -17,3 +17,6 @@ go.work
 # Adds project related exclusions
 annotations.md
 .vscode
+
+# Omit logs
+logs

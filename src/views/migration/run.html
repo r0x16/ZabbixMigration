@@ -1,0 +1,38 @@
+{{define "content"}}
+{{ include "migration/fragments/header" }}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                Migration running status
+            </div>
+            <div class="card-body">
+                {{include "migration/fragments/run-status"}}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                Log
+            </div>
+            <div class="card-body">
+                {{include "migration/fragments/run-log"}}
+            </div>
+        </div>
+    </div>
+</div>
+
+{{end}}
+
+{{define "scripts"}}
+<script src="/js/tooltip.js"></script>
+<script src="/js/migration/run.js"></script>
+{{if .migration.IsRunning}}
+<script>
+    var runEventsUrl = "{{ .runEventsUrl }}";
+</script>
+<script src="/js/migration/run-events.js"></script>
+{{end}}
+{{end}}

@@ -1,0 +1,37 @@
+<div class="row">
+    <div class="col-md-4">Source used templates:</div>
+    <div class="col-md-8">
+        <strong>{{.templateInfo.TotalCount}}</strong>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">Creation queue:</div>
+    <div class="col-md-8">
+        <strong>{{.templateInfo.CreateCount}}</strong>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">Already Mapped queue:</div>
+    <div class="col-md-8">
+        <strong>{{.templateInfo.MapCount}}</strong>
+    </div>
+</div>
+
+<div class="mt-3 text-end">
+    {{if .migration.IsTemplateRunning}}
+    <button class="btn btn-primary" disabled>
+        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+        <span role="status">Migrating...</span>
+    </button>
+    {{else}}
+    <form action="{{reverse "StartMigrationFlow_Run" .migration.ID}}" method="post">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-play-fill"></i>
+            Start Template Migration
+        </button>
+        <input type="hidden" name="type" value="template">
+    </form>
+    {{end}}
+</div>

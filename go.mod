@@ -5,6 +5,7 @@ go 1.21
 require (
 	github.com/foolin/goview v0.3.0
 	github.com/google/uuid v1.3.1
+	github.com/gosimple/slug v1.13.1
 	github.com/imroc/req/v3 v3.42.1
 	github.com/labstack/echo/v4 v4.11.2
 	gorm.io/driver/mysql v1.5.2
@@ -21,6 +22,7 @@ require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/google/pprof v0.0.0-20230901174712-0191c66da455 // indirect
+	github.com/gosimple/unidecode v1.0.1 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
