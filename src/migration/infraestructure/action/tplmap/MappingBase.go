@@ -68,7 +68,7 @@ func (m *MappingBase) getImportedTemplates(server *model.ZabbixServer) ([]*model
 func (m *MappingBase) setupBaseTemplateMap() {
 	for _, sourceTemplate := range m.SourceTemplates {
 		for _, destinationTemplate := range m.DestinationTemplates {
-			if sourceTemplate.Host == destinationTemplate.Host {
+			if sourceTemplate.Host == destinationTemplate.Host || sourceTemplate.RemoteFound == destinationTemplate.Host {
 				m.BaseTemplateMap[sourceTemplate.ID] = destinationTemplate.ID
 			}
 		}

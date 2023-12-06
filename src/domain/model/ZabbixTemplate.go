@@ -18,6 +18,8 @@ type ZabbixTemplate struct {
 	HttpTests   int                     `json:"httpTests,string" gorm:"not null"`
 	Macros      int                     `json:"macros,string" gorm:"not null"`
 
+	RemoteFound string `json:"remoteFound"`
+
 	// Migration in which this proxy is mapped
 	MigrationID uint       `json:"migrationId" gorm:"not null"`
 	Migration   *Migration `json:"migration" gorm:"foreignKey:MigrationID"`
