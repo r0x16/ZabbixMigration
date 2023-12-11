@@ -41,9 +41,9 @@ func (r *ZabbixTemplateRepository) GetByMigrationAndServer(migrationId uint, ser
 }
 
 // GetByTemplateIdAndServer implements repository.ZabbixTemplateRepository.
-func (r *ZabbixTemplateRepository) GetByTemplateIdAndServer(templateId string, serverId uint) (*model.ZabbixTemplate, error) {
+func (r *ZabbixTemplateRepository) GetByTemplateIdAndServer(templateId string, serverId, migrationId uint) (*model.ZabbixTemplate, error) {
 	var zabbixTemplate model.ZabbixTemplate
-	result := r.db.Preload("DestinationMapping.DestinationTemplate").Limit(1).Find(&zabbixTemplate, "templateid = ? AND zabbix_server_id = ?", templateId, serverId)
+	result := r.db.Preload("SourceMapping.DestinationTemplate").Limit(1).Find(&zabbixTemplate, "templateid = ? AND zabbix_server_id = ? AND migration_id = ?", templateId, serverId, migrationId)
 	return &zabbixTemplate, result.Error
 }
 
