@@ -225,6 +225,8 @@ func (s *TemplateMigration) getSourceTemplateConfiguration(templateId string) (s
 
 func (s *TemplateMigration) createTemplate(configuration string) *model.Error {
 
+	configuration = s.debugConfiguration(configuration)
+
 	imported, err := s.destApi.Request(s.destApi.Body("configuration.import", model.ZabbixParams{
 		"format": "xml",
 		"rules": model.ZabbixParams{
@@ -241,7 +243,7 @@ func (s *TemplateMigration) createTemplate(configuration string) *model.Error {
 			"triggers":           model.ZabbixParams{"createMissing": true},
 			"valueMaps":          model.ZabbixParams{"createMissing": true},
 		},
-		"source": s.debugConfiguration(configuration),
+		"source": configuration,
 	}))
 	if err != nil {
 		return &model.Error{
@@ -272,7 +274,7 @@ func (s *TemplateMigration) debugConfiguration(configuration string) string {
 }
 
 func (s *TemplateMigration) createParentTemplate(templateId string, childConfiguration string) (string, *model.Error) {
-	imported, err := s.run.TemplateRepo.GetByTemplateIdAndServer(templateId, s.run.Migration.SourceID)
+	imported, err := s.run.TemplateRepo.GetByTemplateIdAndServer(templateId, s.run.Migration.SourceID, s.run.Migration.ID)
 	if err != nil {
 		return childConfiguration, &model.Error{
 			Code:    http.StatusInternalServerError,
@@ -280,9 +282,11 @@ func (s *TemplateMigration) createParentTemplate(templateId string, childConfigu
 		}
 	}
 
-	if imported.ID != 0 && imported.DestinationMapping != nil {
+	if imported.ID != 0 && imported.SourceMapping != nil {
+		jsonString, _ := json.MarshalIndent(imported.SourceMapping.DestinationTemplate, "", "\t")
+		s.registerLog(fmt.Sprintf("Parent \"%s\" replaced with: \"%s\"", imported.Host, jsonString))
 		oldName := fmt.Sprintf("<name>%s</name>", imported.Host)
-		newName := fmt.Sprintf("<name>%s</name>", imported.DestinationMapping.DestinationTemplate.Host)
+		newName := fmt.Sprintf("<name>%s</name>", imported.SourceMapping.DestinationTemplate.Host)
 		return strings.Replace(childConfiguration, oldName, newName, 1), nil
 	}
 
