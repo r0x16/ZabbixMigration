@@ -25,6 +25,11 @@
         <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
         <span role="status">Migrating...</span>
     </button>
+    {{else if .migration.IsTemplateSuccessful}}
+    <button class="btn btn-primary" disabled>
+        <i class="bi bi-check-lg"></i>
+        Finished!
+    </button>
     {{else}}
     <form action="{{reverse "StartMigrationFlow_Run" .migration.ID}}" method="post">
         <button type="submit" class="btn btn-primary">
