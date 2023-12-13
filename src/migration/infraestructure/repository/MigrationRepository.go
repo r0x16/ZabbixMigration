@@ -24,7 +24,7 @@ func NewMigrationRepository(db *gorm.DB) *MigrationRepository {
 // GetAll implements repository.MigrationRepository.
 func (r *MigrationRepository) GetAll() ([]*model.Migration, error) {
 	var migrations []*model.Migration
-	result := r.db.Joins("Source").Joins("Destination").Find(&migrations)
+	result := r.db.Joins("Source").Joins("Destination").Order("migrations.id desc").Find(&migrations)
 	return migrations, result.Error
 }
 
