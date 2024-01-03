@@ -8,7 +8,7 @@
     </div>
 </div>
 
-<div class="card border-warning">
+<div class="card border-warning mb-2">
     <div class="card-header">
         <i class="bi bi-journal-text"></i>
         Template migration
@@ -17,3 +17,15 @@
         {{include "migration/fragments/run-status-templates"}}
     </div>
 </div>
+
+{{if .migration.IsTemplateSuccessful}}
+<div class="card border-danger mb-2">
+    <div class="card-header">
+        <i class="bi bi-hdd-network-fill"></i>
+        Hosts migration
+    </div>
+    <div class="card-body">
+        {{include "migration/fragments/run-status-hosts"}}
+    </div>
+</div>
+{{end}}

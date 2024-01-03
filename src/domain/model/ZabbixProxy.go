@@ -27,6 +27,10 @@ type ZabbixProxy struct {
 	// Zabbix Server in which this proxy is mapped
 	ZabbixServerID uint          `json:"zabbixServerId" gorm:"not null"`
 	ZabbixServer   *ZabbixServer `json:"zabbixServer" gorm:"foreignKey:ZabbixServerID"`
+
+	// Mapping
+	SourceMapping      *ZabbixProxyMapping `json:"sourceMapping" gorm:"foreignKey:SourceProxyID"`
+	DestinationMapping *ZabbixProxyMapping `json:"destinationMapping" gorm:"foreignKey:DestinationProxyID"`
 }
 
 type ZabbixProxyInterface struct {

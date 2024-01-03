@@ -22,6 +22,8 @@ type RunAction struct {
 	Log               *events.LogController
 	TemplateRepo      *repository.ZabbixTemplateRepository
 	TemplateMigration *TemplateMigration
+	ProxyRepo         *repository.ZabbixProxyRepository
+	HostMigration     *HostMigration
 }
 
 var runMutex sync.Mutex
@@ -32,6 +34,7 @@ func Run(c echo.Context, bundle *drivers.ApplicationBundle) error {
 		Bundle:        bundle,
 		TemplateRepo:  repository.NewZabbixTemplateRepository(bundle.Database.Connection),
 		MigrationRepo: repository.NewMigrationRepository(bundle.Database.Connection),
+		ProxyRepo:     repository.NewZabbixProxyRepository(bundle.Database.Connection),
 	}
 
 	setupError := run.setup()
@@ -42,6 +45,11 @@ func Run(c echo.Context, bundle *drivers.ApplicationBundle) error {
 	templateMigrationInfo, templateMigrationInfoError := run.TemplateMigration.GetMigrationInfo()
 	if templateMigrationInfoError != nil {
 		return echo.NewHTTPError(templateMigrationInfoError.Code, templateMigrationInfoError.Message)
+	}
+
+	hostMigrationInfo, HostMigrationInfoError := run.HostMigration.GetMigrationInfo()
+	if HostMigrationInfoError != nil {
+		return echo.NewHTTPError(HostMigrationInfoError.Code, HostMigrationInfoError.Message)
 	}
 
 	if c.Request().Method == http.MethodPost {
@@ -61,6 +69,7 @@ func Run(c echo.Context, bundle *drivers.ApplicationBundle) error {
 	return c.Render(http.StatusOK, "migration/run", echo.Map{
 		"migration":    run.Migration,
 		"templateInfo": templateMigrationInfo,
+		"hostInfo":     hostMigrationInfo,
 		"currentLogs":  currentLogs,
 		"runEventsUrl": runEventsUrl,
 	})
@@ -75,6 +84,10 @@ func (s *RunAction) runPost() *model.Error {
 	case "template":
 		if !s.Migration.IsTemplateRunning && !s.Migration.IsTemplateSuccessful {
 			return s.TemplateMigration.Run()
+		}
+	case "host":
+		if !s.Migration.IsRunning && !s.Migration.IsSuccess {
+			return s.HostMigration.Run()
 		}
 	default:
 		return &model.Error{
@@ -98,6 +111,7 @@ func (s *RunAction) setup() *model.Error {
 	}
 
 	s.TemplateMigration = NewTemplateMigration(s)
+	s.HostMigration = NewHostMigration(s)
 
 	return nil
 }
