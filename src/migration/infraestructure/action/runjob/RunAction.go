@@ -23,6 +23,7 @@ type RunAction struct {
 	TemplateRepo      *repository.ZabbixTemplateRepository
 	TemplateMigration *TemplateMigration
 	ProxyRepo         *repository.ZabbixProxyRepository
+	HostRepo          *repository.ZabbixHostRepository
 	HostMigration     *HostMigration
 }
 
@@ -35,6 +36,7 @@ func Run(c echo.Context, bundle *drivers.ApplicationBundle) error {
 		TemplateRepo:  repository.NewZabbixTemplateRepository(bundle.Database.Connection),
 		MigrationRepo: repository.NewMigrationRepository(bundle.Database.Connection),
 		ProxyRepo:     repository.NewZabbixProxyRepository(bundle.Database.Connection),
+		HostRepo:      repository.NewZabbixHostRepository(bundle.Database.Connection),
 	}
 
 	setupError := run.setup()
