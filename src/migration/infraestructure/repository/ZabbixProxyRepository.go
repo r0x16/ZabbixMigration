@@ -27,6 +27,13 @@ func (r *ZabbixProxyRepository) GetAll() ([]*model.ZabbixProxy, error) {
 	return zabbixProxies, result.Error
 }
 
+// GetById implements repository.ZabbixProxyRepository.
+func (r *ZabbixProxyRepository) GetByIdWithSourceMappings(id uint) (*model.ZabbixProxy, error) {
+	var zabbixProxy model.ZabbixProxy
+	result := r.db.Joins("Interface").Preload("SourceMapping.DestinationProxy").First(&zabbixProxy, id)
+	return &zabbixProxy, result.Error
+}
+
 // GetByMigration implements repository.ZabbixProxyRepository.
 func (r *ZabbixProxyRepository) GetByMigrationAndServer(migrationId uint, serverId uint) ([]*model.ZabbixProxy, error) {
 	var zabbixProxies []*model.ZabbixProxy
@@ -57,5 +64,10 @@ func (r *ZabbixProxyRepository) MultipleStore(zabbixProxies []*model.ZabbixProxy
 
 func (r *ZabbixProxyRepository) StoreMapping(mapping *model.ZabbixProxyMapping) error {
 	result := r.db.Create(&mapping)
+	return result.Error
+}
+
+func (r *ZabbixProxyRepository) Update(proxy *model.ZabbixProxy) error {
+	result := r.db.Save(proxy)
 	return result.Error
 }

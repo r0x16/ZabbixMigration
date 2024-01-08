@@ -31,6 +31,12 @@ type ZabbixProxy struct {
 	// Mapping
 	SourceMapping      *ZabbixProxyMapping `json:"sourceMapping" gorm:"foreignKey:SourceProxyID"`
 	DestinationMapping *ZabbixProxyMapping `json:"destinationMapping" gorm:"foreignKey:DestinationProxyID"`
+
+	// Running status
+	IsHostsRunning   bool `gorm:"not null;default:false"`
+	IsHostSuccessful bool `gorm:"not null;default:false"`
+	IsHostImporting  bool `gorm:"not null;default:false"`
+	IsHostImported   bool `gorm:"not null;default:false"`
 }
 
 type ZabbixProxyInterface struct {
