@@ -30,7 +30,7 @@ func (r *ZabbixProxyRepository) GetAll() ([]*model.ZabbixProxy, error) {
 // GetById implements repository.ZabbixProxyRepository.
 func (r *ZabbixProxyRepository) GetByIdWithSourceMappings(id uint) (*model.ZabbixProxy, error) {
 	var zabbixProxy model.ZabbixProxy
-	result := r.db.Joins("Interface").Preload("SourceMapping.DestinationProxy").First(&zabbixProxy, id)
+	result := r.db.Joins("Interface").Preload("SourceMapping.DestinationProxy").Preload("ZabbixServer").First(&zabbixProxy, id)
 	return &zabbixProxy, result.Error
 }
 

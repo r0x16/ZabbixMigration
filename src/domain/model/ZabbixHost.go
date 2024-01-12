@@ -7,7 +7,7 @@ type ZabbixHost struct {
 	HostID      string `json:"hostid" gorm:"type:varchar(255);not null"`
 	Host        string `json:"host" gorm:"type:varchar(255);not null"`
 	ProxyHostID string `json:"proxy_hostid" gorm:"type:varchar(255)"`
-	Status      int    `json:"status" gorm:"not null"`
+	Status      string `json:"status" gorm:"not null"`
 
 	// Migration info
 	MigrationID uint       `gorm:"not null"`

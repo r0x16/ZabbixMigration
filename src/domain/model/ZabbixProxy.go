@@ -37,6 +37,8 @@ type ZabbixProxy struct {
 	IsHostSuccessful bool `gorm:"not null;default:false"`
 	IsHostImporting  bool `gorm:"not null;default:false"`
 	IsHostImported   bool `gorm:"not null;default:false"`
+	IsHostDisabling  bool `gorm:"not null;default:false"`
+	IsRollingBack    bool `gorm:"not null;default:false"`
 }
 
 type ZabbixProxyInterface struct {
