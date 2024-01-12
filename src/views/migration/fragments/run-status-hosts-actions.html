@@ -23,12 +23,26 @@
         {{end}}
         
         {{if and .IsHostImported (not .IsHostSuccessful) }}
+        
             {{if .IsHostsRunning}}
+                <button type="submit" class="btn btn-info" disabled>
+                    <i class="bi bi-gear"></i>
+                </button>
+
                 <button type="submit" class="btn btn-success" disabled>
                     <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
                     <span class="visually-hidden" role="status">Loading...</span>
                 </button>
             {{else}}
+                <form style="display: inline;" action="{{reverse "StartMigrationFlow_Setup" $.migration.ID}}" method="post">
+                    <button type="submit" class="btn btn-info" data-bs-toggle="tooltip"
+                        data-bs-title="Setup Migration">
+                        <i class="bi bi-gear"></i>
+                    </button>
+                    <input type="hidden" name="type" value="setup">
+                    <input type="hidden" name="source" value="{{.ID}}">
+                </form>
+
                 <form style="display: inline;" action="{{reverse "StartMigrationFlow_Run" $.migration.ID}}" method="post">
                     <button type="submit" class="btn btn-success" data-bs-toggle="tooltip"
                         data-bs-title="Migrate imported hosts">
