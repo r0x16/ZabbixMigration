@@ -54,3 +54,36 @@ func getMigrationFromId(id uint, bundle *drivers.ApplicationBundle) (*model.Migr
 
 	return migration, nil
 }
+
+func ExtractFormSourceProxy(c echo.Context, repo *repository.ZabbixProxyRepository, migration *model.Migration) (*model.ZabbixProxy, *model.Error) {
+	proxyId, proxyIdError := strconv.Atoi(c.FormValue("source"))
+	if proxyIdError != nil {
+		return nil, &model.Error{
+			Code:    http.StatusBadRequest,
+			Message: proxyIdError.Error(),
+		}
+	}
+
+	if proxyId == 0 {
+		return getDefaultSourceProxy(migration), nil
+	}
+
+	proxy, proxyError := repo.GetByIdWithSourceMappings(uint(proxyId))
+	if proxyError != nil {
+		return nil, &model.Error{
+			Code:    http.StatusInternalServerError,
+			Message: proxyError.Error(),
+		}
+	}
+
+	return proxy, nil
+}
+
+func getDefaultSourceProxy(migration *model.Migration) *model.ZabbixProxy {
+	return &model.ZabbixProxy{
+		ProxyID:      "0",
+		Host:         "Default (Server monitoring)",
+		Migration:    migration,
+		ZabbixServer: &migration.Source,
+	}
+}
