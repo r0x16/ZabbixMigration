@@ -24,6 +24,7 @@ type RunAction struct {
 	TemplateMigration *TemplateMigration
 	ProxyRepo         *repository.ZabbixProxyRepository
 	HostRepo          *repository.ZabbixHostRepository
+	HostImport        *HostImport
 	HostMigration     *HostMigration
 }
 
@@ -91,6 +92,10 @@ func (s *RunAction) runPost() *model.Error {
 		if !s.Migration.IsRunning && !s.Migration.IsSuccess {
 			return s.HostMigration.Run()
 		}
+	case "host-import":
+		if !s.Migration.IsRunning && !s.Migration.IsSuccess {
+			return s.HostImport.Run()
+		}
 	default:
 		return &model.Error{
 			Code:    http.StatusBadRequest,
@@ -113,6 +118,7 @@ func (s *RunAction) setup() *model.Error {
 	}
 
 	s.TemplateMigration = NewTemplateMigration(s)
+	s.HostImport = NewHostImport(s)
 	s.HostMigration = NewHostMigration(s)
 
 	return nil
