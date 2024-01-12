@@ -43,7 +43,7 @@ func (r *ZabbixProxyRepository) GetByMigrationAndServer(migrationId uint, server
 
 func (r *ZabbixProxyRepository) GetByServerWithSourceMappings(migration, serverId uint) ([]*model.ZabbixProxy, error) {
 	var zabbixProxies []*model.ZabbixProxy
-	result := r.db.Preload("SourceMapping.DestinationProxy").Find(&zabbixProxies, "migration_id = ? AND zabbix_server_id = ?", migration, serverId)
+	result := r.db.Order("host_count asc").Preload("SourceMapping.DestinationProxy").Find(&zabbixProxies, "migration_id = ? AND zabbix_server_id = ?", migration, serverId)
 	return zabbixProxies, result.Error
 }
 
