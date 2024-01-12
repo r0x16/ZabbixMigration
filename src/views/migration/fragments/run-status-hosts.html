@@ -8,21 +8,6 @@
         </tr>
     </thead>
     <tbody>
-        {{range .hostInfo.Proxies}}
-        <tr>
-            <td>{{.Host}}</td>
-            <td>{{.HostCount}}</td>
-            <td>{{.SourceMapping.DestinationProxy.Host}}</td>
-            <td>
-                <form action="{{reverse "StartMigrationFlow_Run" $.migration.ID}}" method="post">
-                    <button type="submit" class="btn btn-success">
-                        <i class="bi bi-play-fill"></i>
-                    </button>
-                    <input type="hidden" name="type" value="host">
-                    <input type="hidden" name="source" value="{{.ID}}">
-                </form>
-            </td>
-        </tr>
-        {{end}}
+        {{include "migration/fragments/run-status-hosts-actions"}}
     </tbody>
 </table>

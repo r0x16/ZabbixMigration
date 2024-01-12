@@ -1,0 +1,76 @@
+{{range .hostInfo.Proxies}}
+<tr>
+    <td>{{.Host}}</td>
+    <td>{{.HostCount}}</td>
+    <td>{{.SourceMapping.DestinationProxy.Host}}</td>
+    <td>
+        {{if not .IsHostImported }}
+            {{if .IsHostImporting }}
+                <button type="submit" class="btn btn-secondary" disabled>
+                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                    <span class="visually-hidden" role="status">Loading...</span>
+                </button>
+            {{else}}
+                <form style="display: inline;" action="{{reverse "StartMigrationFlow_Run" $.migration.ID}}" method="post">
+                    <button type="submit" class="btn btn-secondary" data-bs-toggle="tooltip"
+                        data-bs-title="Import Source Hosts">
+                        <i class="bi bi-box-arrow-down"></i>
+                    </button>
+                    <input type="hidden" name="type" value="host-import">
+                    <input type="hidden" name="source" value="{{.ID}}">
+                </form>
+            {{end}}
+        {{end}}
+        
+        {{if and .IsHostImported (not .IsHostSuccessful) }}
+            {{if .IsHostsRunning}}
+                <button type="submit" class="btn btn-success" disabled>
+                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                    <span class="visually-hidden" role="status">Loading...</span>
+                </button>
+            {{else}}
+                <form style="display: inline;" action="{{reverse "StartMigrationFlow_Run" $.migration.ID}}" method="post">
+                    <button type="submit" class="btn btn-success" data-bs-toggle="tooltip"
+                        data-bs-title="Migrate imported hosts">
+                        <i class="bi bi-play-fill"></i>
+                    </button>
+                    <input type="hidden" name="type" value="host">
+                    <input type="hidden" name="source" value="{{.ID}}">
+                </form>
+            {{end}}
+        {{end}}
+        
+        {{if .IsHostSuccessful }}
+            {{if .IsDisabling }}
+                <button type="submit" class="btn btn-danger" disabled>
+                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                    <span class="visually-hidden" role="status">Loading...</span>
+                </button>
+            {{else}}
+                <form style="display: inline;" action="{{reverse "StartMigrationFlow_Run" $.migration.ID}}" method="post">
+                    <button type="submit" class="btn btn-danger" data-bs-toggle="tooltip" data-bs-title="Disable source hosts">
+                        <i class="bi bi-ban"></i>
+                    </button>
+                    <input type="hidden" name="type" value="host-src-disable">
+                    <input type="hidden" name="source" value="{{.ID}}">
+                </form>
+            {{end}}
+            
+            {{if .IsRollingBack}}
+                <button type="submit" class="btn btn-warning" disabled>
+                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                    <span class="visually-hidden" role="status">Loading...</span>
+                </button>
+            {{else}}
+                <form style="display: inline;" action="{{reverse "StartMigrationFlow_Run" $.migration.ID}}" method="post">
+                    <button type="submit" class="btn btn-warning" data-bs-toggle="tooltip" data-bs-title="Rollback migration">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                    </button>
+                    <input type="hidden" name="type" value="rollback">
+                    <input type="hidden" name="source" value="{{.ID}}">
+                </form>
+            {{end}}
+        {{end}}
+    </td>
+</tr>
+{{end}}
