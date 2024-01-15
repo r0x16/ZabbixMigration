@@ -18,13 +18,20 @@ type Migration struct {
 	DefaultProxyID sql.NullInt32 `json:"defaultProxyId" form:"defaultProxy"`
 	DefaultProxy   *ZabbixProxy  `json:"defaultProxy" gorm:"foreignKey:DefaultProxyID"`
 
-	IsRunning            bool      `gorm:"not null;default:false"`
-	IsTemplateRunning    bool      `gorm:"not null;default:false"`
-	IsTemplateSuccessful bool      `json:"isTemplateSuccessful" gorm:"not null;default:false"`
-	IsSuccess            bool      `gorm:"not null"`
-	LastRunAt            time.Time `gorm:"not null"`
-	IsProxyImported      bool      `gorm:"not null;default:false"`
-	IsProxyMapped        bool      `gorm:"not null"`
-	IsTemplateImported   bool      `gorm:"not null;default:false"`
-	HasTemplateBindings  bool      `gorm:"not null"`
+	IsRunning              bool      `gorm:"not null;default:false"`
+	IsTemplateRunning      bool      `gorm:"not null;default:false"`
+	IsTemplateSuccessful   bool      `json:"isTemplateSuccessful" gorm:"not null;default:false"`
+	IsDefaultRunning       bool      `gorm:"not null;default:false"`
+	IsDefaultSuccessful    bool      `json:"isDefaultSuccessful" gorm:"not null;default:false"`
+	IsDefaultHostImporting bool      `gorm:"not null;default:false"`
+	IsDefaultHostImported  bool      `json:"isHostSuccessful" gorm:"not null;default:false"`
+	IsDefaultDisabling     bool      `gorm:"not null;default:false"`
+	IsDefaultDisabled      bool      `json:"isDefaultDisabled" gorm:"not null;default:false"`
+	IsDefaultRollingBack   bool      `gorm:"not null;default:false"`
+	IsSuccess              bool      `gorm:"not null"`
+	LastRunAt              time.Time `gorm:"not null"`
+	IsProxyImported        bool      `gorm:"not null;default:false"`
+	IsProxyMapped          bool      `gorm:"not null"`
+	IsTemplateImported     bool      `gorm:"not null;default:false"`
+	HasTemplateBindings    bool      `gorm:"not null"`
 }

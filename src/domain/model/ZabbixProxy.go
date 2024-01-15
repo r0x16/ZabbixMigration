@@ -9,6 +9,7 @@ import (
 type ZabbixProxy struct {
 	gorm.Model
 	Host         string        `json:"host" gorm:"type:varchar(255);not null"`
+	ProxyID      string        `json:"proxyid" gorm:"type:varchar(255); index"`
 	Status       string        `json:"status" gorm:"not null"`
 	LastAccess   string        `json:"lastaccess" gorm:"not null"`
 	ProxyAddress string        `json:"proxy_address" gorm:"type:varchar(255)"`
@@ -26,6 +27,18 @@ type ZabbixProxy struct {
 	// Zabbix Server in which this proxy is mapped
 	ZabbixServerID uint          `json:"zabbixServerId" gorm:"not null"`
 	ZabbixServer   *ZabbixServer `json:"zabbixServer" gorm:"foreignKey:ZabbixServerID"`
+
+	// Mapping
+	SourceMapping      *ZabbixProxyMapping `json:"sourceMapping" gorm:"foreignKey:SourceProxyID"`
+	DestinationMapping *ZabbixProxyMapping `json:"destinationMapping" gorm:"foreignKey:DestinationProxyID"`
+
+	// Running status
+	IsHostsRunning   bool `gorm:"not null;default:false"`
+	IsHostSuccessful bool `gorm:"not null;default:false"`
+	IsHostImporting  bool `gorm:"not null;default:false"`
+	IsHostImported   bool `gorm:"not null;default:false"`
+	IsHostDisabling  bool `gorm:"not null;default:false"`
+	IsRollingBack    bool `gorm:"not null;default:false"`
 }
 
 type ZabbixProxyInterface struct {

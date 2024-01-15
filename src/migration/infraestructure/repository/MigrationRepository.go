@@ -24,7 +24,7 @@ func NewMigrationRepository(db *gorm.DB) *MigrationRepository {
 // GetAll implements repository.MigrationRepository.
 func (r *MigrationRepository) GetAll() ([]*model.Migration, error) {
 	var migrations []*model.Migration
-	result := r.db.Joins("Source").Joins("Destination").Find(&migrations)
+	result := r.db.Joins("Source").Joins("Destination").Order("migrations.id desc").Find(&migrations)
 	return migrations, result.Error
 }
 
@@ -41,7 +41,7 @@ func (r *MigrationRepository) GetById(id uint) (*model.Migration, error) {
 	r.mutex.Lock()
 	defer r.mutex.Unlock()
 	var migration model.Migration
-	result := r.db.Joins("Source").Joins("Destination").First(&migration, id)
+	result := r.db.Joins("Source").Joins("Destination").Joins("DefaultProxy").First(&migration, id)
 	return &migration, result.Error
 }
 
