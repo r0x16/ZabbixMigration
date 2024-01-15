@@ -6,4 +6,5 @@ type ZabbixHostRepository interface {
 	FindByMigration(migration *model.Migration) ([]*model.ZabbixHost, error)
 	FindByMigrationAndProxy(migration *model.Migration, proxy *model.ZabbixProxy) ([]*model.ZabbixHost, error)
 	MultipleStore(hosts []*model.ZabbixHost) error
+	Update(host *model.ZabbixHost) error
 }

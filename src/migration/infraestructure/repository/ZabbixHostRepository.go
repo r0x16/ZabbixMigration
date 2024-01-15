@@ -41,3 +41,9 @@ func (r *ZabbixHostRepository) MultipleStore(hosts []*model.ZabbixHost) error {
 	result := r.db.Create(&hosts)
 	return result.Error
 }
+
+// Update implements repository.ZabbixHostRepository.
+func (r *ZabbixHostRepository) Update(host *model.ZabbixHost) error {
+	result := r.db.Save(host)
+	return result.Error
+}
