@@ -25,6 +25,9 @@ type Migration struct {
 	IsDefaultSuccessful    bool      `json:"isDefaultSuccessful" gorm:"not null;default:false"`
 	IsDefaultHostImporting bool      `gorm:"not null;default:false"`
 	IsDefaultHostImported  bool      `json:"isHostSuccessful" gorm:"not null;default:false"`
+	IsDefaultDisabling     bool      `gorm:"not null;default:false"`
+	IsDefaultDisabled      bool      `json:"isDefaultDisabled" gorm:"not null;default:false"`
+	IsDefaultRollingBack   bool      `gorm:"not null;default:false"`
 	IsSuccess              bool      `gorm:"not null"`
 	LastRunAt              time.Time `gorm:"not null"`
 	IsProxyImported        bool      `gorm:"not null;default:false"`

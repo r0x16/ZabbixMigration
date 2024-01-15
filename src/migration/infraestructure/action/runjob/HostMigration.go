@@ -199,7 +199,9 @@ func (s *HostMigration) debugConfiguration(configuration string) string {
 
 func (s *HostMigration) addMigrationGroups(configuration string) string {
 	oldGroups := "</groups>"
-	newGroups := "<group><name>Migrated</name></group></groups>"
+	newGroups := fmt.Sprintf("<group><name>Source: %s</name></group>", s.run.Migration.Source.Name)
+	newGroups += fmt.Sprintf("<group><name>Source Proxy: %s</name></group>", s.SourceProxy.Host)
+	newGroups += "<group><name>Migrated</name></group></groups>"
 
 	return strings.Replace(configuration, oldGroups, newGroups, -1)
 }
@@ -409,7 +411,17 @@ func (s *HostMigration) setRunning() *model.Error {
 func (s *HostMigration) stop(sucess bool) {
 	s.registerLog("Finishing host migration")
 
+	if !sucess {
+		s.registerLog("Migration finished with error, check the logs for more details")
+	}
+
 	s.run.Migration.IsRunning = false
+
+	if s.SourceProxy.ProxyID == "0" {
+		s.run.Migration.IsDefaultRunning = false
+		s.run.Migration.IsDefaultSuccessful = sucess
+	}
+
 	stopError := s.run.MigrationRepo.Update(s.run.Migration)
 	if stopError != nil {
 		s.registerLog(stopError.Error())
@@ -417,10 +429,14 @@ func (s *HostMigration) stop(sucess bool) {
 
 	s.SourceProxy.IsHostsRunning = false
 	s.SourceProxy.IsHostSuccessful = sucess
-	proxyStopError := s.run.ProxyRepo.Update(s.SourceProxy)
 
-	if proxyStopError != nil {
-		s.registerLog(proxyStopError.Error())
+	if s.SourceProxy.ProxyID != "0" {
+
+		proxyStopError := s.run.ProxyRepo.Update(s.SourceProxy)
+
+		if proxyStopError != nil {
+			s.registerLog(proxyStopError.Error())
+		}
 	}
 
 	s.run.Bundle.ServerEvents[s.eventId].Broadcast(&sharedDomain.EventMessage{

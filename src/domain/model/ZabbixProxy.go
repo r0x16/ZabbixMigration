@@ -9,7 +9,7 @@ import (
 type ZabbixProxy struct {
 	gorm.Model
 	Host         string        `json:"host" gorm:"type:varchar(255);not null"`
-	ProxyID      string        `json:"proxyid" gorm:"type:varchar(255)"`
+	ProxyID      string        `json:"proxyid" gorm:"type:varchar(255); index"`
 	Status       string        `json:"status" gorm:"not null"`
 	LastAccess   string        `json:"lastaccess" gorm:"not null"`
 	ProxyAddress string        `json:"proxy_address" gorm:"type:varchar(255)"`

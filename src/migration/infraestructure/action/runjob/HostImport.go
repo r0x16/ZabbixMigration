@@ -84,6 +84,12 @@ func (s *HostImport) stop(sucess bool) {
 	handler := s.run.Bundle.ServerEvents[s.eventId]
 
 	s.run.Migration.IsRunning = false
+
+	if s.SourceProxy.ProxyID == "0" {
+		s.run.Migration.IsDefaultHostImporting = false
+		s.run.Migration.IsDefaultHostImported = sucess
+	}
+
 	stopError := s.run.MigrationRepo.Update(s.run.Migration)
 	if stopError != nil {
 		s.registerLog(stopError.Error())
@@ -95,14 +101,17 @@ func (s *HostImport) stop(sucess bool) {
 
 	s.SourceProxy.IsHostImporting = false
 	s.SourceProxy.IsHostImported = sucess
-	proxyStopError := s.run.ProxyRepo.Update(s.SourceProxy)
 
-	if proxyStopError != nil {
-		s.registerLog(proxyStopError.Error())
-		handler.Broadcast(&sharedDomain.EventMessage{
-			Event: "error",
-			Data:  "Proxy finished with errors",
-		})
+	if s.SourceProxy.ProxyID != "0" {
+		proxyStopError := s.run.ProxyRepo.Update(s.SourceProxy)
+
+		if proxyStopError != nil {
+			s.registerLog(proxyStopError.Error())
+			handler.Broadcast(&sharedDomain.EventMessage{
+				Event: "error",
+				Data:  "Proxy finished with errors",
+			})
+		}
 	}
 
 	handler.Broadcast(&sharedDomain.EventMessage{
@@ -129,6 +138,8 @@ func (s *HostImport) extractAndStore() *model.Error {
 			Message: storeError.Error(),
 		}
 	}
+
+	s.registerLog(fmt.Sprintf("Imported %d hosts from source", len(templates)))
 
 	return nil
 
@@ -215,6 +226,11 @@ func (s *HostImport) setRunning() *model.Error {
 	}
 
 	s.SourceProxy.IsHostImporting = true
+
+	if s.SourceProxy.ProxyID == "0" {
+		return nil
+	}
+
 	proxyUpdateError := s.run.ProxyRepo.Update(s.SourceProxy)
 	if proxyUpdateError != nil {
 		return &model.Error{
