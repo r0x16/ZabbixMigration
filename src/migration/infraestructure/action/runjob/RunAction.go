@@ -26,6 +26,7 @@ type RunAction struct {
 	HostRepo          *repository.ZabbixHostRepository
 	HostImport        *HostImport
 	HostMigration     *HostMigration
+	HostDisable       *HostDisable
 }
 
 var runMutex sync.Mutex
@@ -96,6 +97,10 @@ func (s *RunAction) runPost() *model.Error {
 		if !s.Migration.IsRunning && !s.Migration.IsSuccess {
 			return s.HostImport.Run()
 		}
+	case "host-src-disable":
+		if !s.Migration.IsRunning && !s.Migration.IsSuccess {
+			return s.HostDisable.Run()
+		}
 	default:
 		return &model.Error{
 			Code:    http.StatusBadRequest,
@@ -120,6 +125,7 @@ func (s *RunAction) setup() *model.Error {
 	s.TemplateMigration = NewTemplateMigration(s)
 	s.HostImport = NewHostImport(s)
 	s.HostMigration = NewHostMigration(s)
+	s.HostDisable = NewHostDisable(s)
 
 	return nil
 }
