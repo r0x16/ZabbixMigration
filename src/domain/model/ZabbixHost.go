@@ -14,4 +14,7 @@ type ZabbixHost struct {
 	Migration   *Migration `gorm:"foreignKey:MigrationID"`
 
 	Disabled int `gorm:"not null"`
+
+	// Template Info
+	Templates []*ZabbixTemplate `json:"parentTemplates" gorm:"-"`
 }
