@@ -27,6 +27,7 @@ type RunAction struct {
 	HostImport        *HostImport
 	HostMigration     *HostMigration
 	HostDisable       *HostDisable
+	HostRollback      *HostRollback
 }
 
 var runMutex sync.Mutex
@@ -91,6 +92,7 @@ func (s *RunAction) runPost() *model.Error {
 		}
 	case "host":
 		if !s.Migration.IsRunning && !s.Migration.IsSuccess {
+			fmt.Println("", "", "host migration test", "", "")
 			return s.HostMigration.Run()
 		}
 	case "host-import":
@@ -100,6 +102,10 @@ func (s *RunAction) runPost() *model.Error {
 	case "host-src-disable":
 		if !s.Migration.IsRunning && !s.Migration.IsSuccess {
 			return s.HostDisable.Run()
+		}
+	case "rollback":
+		if !s.Migration.IsRunning && !s.Migration.IsSuccess {
+			return s.HostRollback.Run()
 		}
 	default:
 		return &model.Error{
@@ -126,6 +132,7 @@ func (s *RunAction) setup() *model.Error {
 	s.HostImport = NewHostImport(s)
 	s.HostMigration = NewHostMigration(s)
 	s.HostDisable = NewHostDisable(s)
+	s.HostRollback = NewHostRollback(s)
 
 	return nil
 }

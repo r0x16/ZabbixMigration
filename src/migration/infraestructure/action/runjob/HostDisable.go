@@ -23,7 +23,7 @@ type HostDisable struct {
 func NewHostDisable(run *RunAction) *HostDisable {
 	return &HostDisable{
 		run:     run,
-		eventId: "migration-run",
+		eventId: fmt.Sprintf("migration-run-%d", run.Migration.ID),
 		srcApi:  nil,
 	}
 }

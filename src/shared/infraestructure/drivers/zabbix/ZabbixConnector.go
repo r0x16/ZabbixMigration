@@ -60,6 +60,14 @@ func (z *ZabbixConnector) baseConnect(params model.ZabbixParams) *model.Error {
  * It returns a pointer to a ZabbixResponse and a pointer to an Error
  */
 func (z *ZabbixConnector) Request(body *model.ZabbixRequest) (*model.ZabbixResponse, *model.Error) {
+	return z.RawRequest(body)
+}
+
+func (z *ZabbixConnector) ArrayRequest(body *model.ZabbixArrayRequest) (*model.ZabbixResponse, *model.Error) {
+	return z.RawRequest(body)
+}
+
+func (z *ZabbixConnector) RawRequest(body any) (*model.ZabbixResponse, *model.Error) {
 	var response model.ZabbixResponse
 
 	resp := z.client.Post().SetBody(body).Do()
@@ -126,6 +134,21 @@ func (z *ZabbixConnector) Body(method string, params model.ZabbixParams) *model.
 	}
 
 	return &model.ZabbixRequest{
+		Jsonrpc: "2.0",
+		Method:  method,
+		Params:  params,
+		Auth:    z.Token,
+		Id:      1,
+	}
+}
+
+func (z *ZabbixConnector) ArrayBody(method string, params []string) *model.ZabbixArrayRequest {
+	if z.Token == "" {
+		// die
+		panic("Zabbix connection not initialized and required")
+	}
+
+	return &model.ZabbixArrayRequest{
 		Jsonrpc: "2.0",
 		Method:  method,
 		Params:  params,

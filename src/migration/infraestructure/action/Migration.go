@@ -81,9 +81,16 @@ func ExtractFormSourceProxy(c echo.Context, repo *repository.ZabbixProxyReposito
 
 func getDefaultSourceProxy(migration *model.Migration) *model.ZabbixProxy {
 	return &model.ZabbixProxy{
-		ProxyID:      "0",
-		Host:         "Default (Server monitoring)",
-		Migration:    migration,
-		ZabbixServer: &migration.Source,
+		ProxyID:          "0",
+		Host:             "Default (Server monitoring)",
+		Migration:        migration,
+		ZabbixServer:     &migration.Source,
+		IsHostSuccessful: migration.IsDefaultSuccessful,
+		IsHostsRunning:   migration.IsDefaultRunning,
+		IsHostDisabling:  migration.IsDefaultDisabling,
+		IsHostDisabled:   migration.IsDefaultDisabled,
+		IsHostImporting:  migration.IsDefaultHostImporting,
+		IsHostImported:   migration.IsDefaultHostImported,
+		IsRollingBack:    migration.IsDefaultRollingBack,
 	}
 }

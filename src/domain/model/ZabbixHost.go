@@ -15,6 +15,8 @@ type ZabbixHost struct {
 
 	Disabled int `gorm:"not null"`
 
+	DstHostID string `json:"dst_hostid" gorm:"-"`
+
 	// Template Info
 	Templates []*ZabbixTemplate `json:"parentTemplates" gorm:"-"`
 }
