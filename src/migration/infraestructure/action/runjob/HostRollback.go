@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/domain/model"
 	"git.tnschile.com/sistemas/zabbix/zabbix-migration/src/migration/infraestructure/action"
@@ -113,6 +114,7 @@ func (s *HostRollback) rollbackHosts(hosts []*model.ZabbixHost) *model.Error {
 		if rollbackError != nil {
 			return rollbackError
 		}
+		time.Sleep(500 * time.Millisecond)
 	}
 	return nil
 }

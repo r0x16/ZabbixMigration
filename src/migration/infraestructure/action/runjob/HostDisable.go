@@ -90,7 +90,7 @@ func (s *HostDisable) disableHosts(hosts []*model.ZabbixHost) *model.Error {
 		if disableError != nil {
 			return disableError
 		}
-		time.Sleep(100 * time.Millisecond)
+		time.Sleep(500 * time.Millisecond)
 	}
 	return nil
 }
