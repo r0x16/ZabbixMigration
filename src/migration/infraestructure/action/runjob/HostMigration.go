@@ -91,7 +91,7 @@ func (s *HostMigration) start() {
 			s.stop(false)
 			return
 		}
-		time.Sleep(200 * time.Millisecond)
+		time.Sleep(500 * time.Millisecond)
 	}
 
 	s.stop(true)

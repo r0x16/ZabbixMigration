@@ -1,5 +1,16 @@
+const maxLines = 500;
+
 document.addEventListener("DOMContentLoaded", function() {
-    let textarea = document.getElementById('runLogArea');
-    textarea.scrollTop = textarea.scrollHeight;
+    trimTextArea();
 });
 
+function trimTextArea() {
+    let textarea = document.getElementById('runLogArea');
+    let lines = textarea.value.split('\n');
+
+    if (lines.length > maxLines) {
+        textarea.value = lines.slice(-maxLines).join('\n');
+    }
+
+    textarea.scrollTop = textarea.scrollHeight;
+}
