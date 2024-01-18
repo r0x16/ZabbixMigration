@@ -1,18 +1,14 @@
 FROM golang:1.21-bullseye
 
 # Set destination for COPY
-WORKDIR /app
-
-# Download Go modules
-COPY go.mod go.sum ./
-RUN go mod download
+WORKDIR /opt/zbxmigration
 
 # Copy the source code. Note the slash at the end, as explained in
 # https://docs.docker.com/engine/reference/builder/#copy
-COPY *.go ./
+COPY . .
 
 # Build
-RUN CGO_ENABLED=0 GOOS=linux go build -o /zabbix-migration
+RUN go build -o zbxmigration .
 
 # Optional:
 # To bind to a TCP port, runtime parameters must be supplied to the docker command.
@@ -22,4 +18,4 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /zabbix-migration
 EXPOSE 8080
 
 # Run
-CMD ["/zabbix-migration"]
+CMD ["/opt/zbxmigration/zbxmigration"]
