@@ -1,0 +1,32 @@
+volumes:
+  db-data:
+
+services:
+  zbxmigration:
+    image: r0x16/zabbix-migration:1.0.0
+    # working_dir value has to be the same of mapped volume
+    ports:
+      - 80:8080
+    volumes:
+      - ./logs:/opt/zbxmigration/logs:rw
+    environment:
+      - CRODONT_PORT=8080
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=crodont
+      - DB_PASSWORD=crodont
+      - DB_DATABASE=zbxmigration
+    depends_on:
+      - db
+  # Mariadb service
+  db:
+    image: postgres:16.0
+    ports:
+      - 5432:5432
+    volumes:
+      - db-data:/var/lib/postgresql/data:rw
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+    environment:
+      - POSTGRES_USER=crodont
+      - POSTGRES_PASSWORD=crodont
+      - POSTGRES_DB=zbxmigration
